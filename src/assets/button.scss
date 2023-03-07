@@ -1,0 +1,19 @@
+.btn{
+    border: 1px solid transparent;
+    padding: 0.5em;
+    border-radius: 0.5em;
+    transition: 0.2s;
+    &:hover {
+        cursor: pointer;
+        border: 1px solid black;
+    }
+}
+.btn-danger{
+    background-color: #d9534f;
+}
+.btn-confirm{
+    background-color: #5cb85c;
+}
+.btn-update{
+    background-color: #f0ad4e;
+}

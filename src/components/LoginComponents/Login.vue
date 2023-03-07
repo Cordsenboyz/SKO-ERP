@@ -1,6 +1,5 @@
 <script setup lang="jsx">
 import {store} from "../../store.js"
-
 </script>
 
 <template lang="">
@@ -25,11 +24,12 @@ export default {
 
             TempLoginUsername: "Admin",
             TempLoginPassword: "Password",
-            User: [{
+            User: {
                 Username: "Admin",
                 Email: "Admin@sko-erp.dk",
+                Role: "Admin",
                 AccessToken: "ergergergergergergergergfdsfdftrsgervxfvgsrgvv"
-            }]
+            }
         }
     },
     methods: {
