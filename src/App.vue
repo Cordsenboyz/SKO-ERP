@@ -6,10 +6,14 @@ import { store } from './store.js'
 </script>
 
 <template>
-  <section v-if="store.IsAuthenticated">
-    <NavbarView />
-    <RouterView />
-  </section>  
+  <div v-if="store.IsAuthenticated">
+    <section>
+      <NavbarView />
+    </section>
+    <section>
+      <RouterView />
+    </section>
+  </div>  
   <section v-else class="Login-section">
     <Login />
   </section>
@@ -25,7 +29,9 @@ import { store } from './store.js'
     methods: {
     },
     created: function(){
-      if(localStorage.getItem("User")) store.IsAuthenticated = true
+      if(localStorage.getItem("User")){
+        store.IsAuthenticated = true
+      } 
     }
   }
 </script>
