@@ -29,6 +29,7 @@ defineProps({
                         <option v-for="subcategory in GetSubCategories" :key="subcategory" :value="subcategory.id" placeholder="Under Kategori">{{subcategory.name}}</option>
                     </select>
                     <button class="btn btn-danger" @click="clearFilters()">Ryd Filtre</button>
+                    <button class="btn btn-confirm right">Tilføj</button>
                 </div>
             </div>
             <div class="LagerListItemTable-div">
@@ -105,7 +106,7 @@ export default {
         },
         filtered(){
             let category = this.categories.find((a) => a.id === this.categoryFilter)
-            var subcategory = category?.subcategories.find((a) => a.id === this.subCategoryFilter)
+            let subcategory = category?.subcategories.find((a) => a.id === this.subCategoryFilter)
             let filteredList = [...this.LagerItems].filter((item) => {
                 if(category && subcategory) return item.category.id === category.id && item.subcategory.id === subcategory.id
                 if(category) return item.category.id === category.id
@@ -127,10 +128,10 @@ export default {
         },
         sortBy: function(){
             this.LagerItems.sort(function(a,b) {
-            var x = a.name.toLowerCase();
-            var y = b.name.toLowerCase();
-            return x < y ? -1 : x > y ? 1 : 0;
-        });
+                let x = a.name.toLowerCase();
+                let y = b.name.toLowerCase();
+                return x < y ? -1 : x > y ? 1 : 0;
+            });
         },
         setProperty(property){
             if(this.property === property) {

@@ -1,13 +1,14 @@
 <script setup lang="jsx">
 import { role } from '../../store.js'
+import Dialog from '../UtilsComponents/Dialog.vue';
 defineProps({
     imgsrc: String,
     id: Number,
     name: String,
     desc: String,
     amount: Number,
-    category: String,
-    subcategory: String,
+    category: Object,
+    subcategory: Object,
     producent: String,
 })
 
@@ -53,15 +54,32 @@ defineProps({
             <div class="button-container">
                 <button class="btn btn-confirm">Hent</button>              
                 <button v-if="role.value == 'Admin'" class="btn btn-update">Opdatér</button>
-                <button v-if="role.value == 'Admin'" class="btn btn-danger">Slet</button>
+                <button v-if="role.value == 'Admin'" class="btn btn-danger" @click="DeleteItem()">Slet</button>
             </div>
         </div>
     </div>
+    <Dialog v-if="role.value == 'Admin'" :show="showDialog" :cancel="cancel" :confirm="confirm" title="Slet product" description="Du skal kun slette dette product hvis du er sikker på der ikke er mere på lageret" />
 </template>
 
 <script lang="jsx">
 export default {
-    
+    data(){
+        return{
+            showDialog: false,
+        }
+    },
+    methods: {
+        DeleteItem: function(){
+            this.showDialog = true;
+        },
+        cancel: function(){
+            this.showDialog = false;
+        },
+        confirm: function(){
+            this.emitter.emit("DeleteItem", this.id)
+            this.showDialog = false;
+        },
+    }
 }
 </script>
 

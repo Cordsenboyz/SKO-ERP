@@ -61,6 +61,13 @@ export default {
         this.emitter.on("SelectedItem", (userSelectedItem) => {
             this.SelectedItem = {...userSelectedItem}
         })
+        this.emitter.on("DeleteItem", (id) => {
+            const idxObj = this.LagerItems.findIndex(object => {
+                return object.id === id
+            })
+            this.LagerItems.splice(idxObj, 1)
+            this.SelectedItem = this.LagerItems[0]         
+        })
     },
     created: function(){
         this.SelectedItem = this.LagerItems[0]
