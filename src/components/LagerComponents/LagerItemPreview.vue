@@ -1,9 +1,14 @@
 <script setup lang="jsx">
+import { role } from '../../store.js'
 defineProps({
+    imgsrc: String,
     id: Number,
     name: String,
     desc: String,
-    amount: Number
+    amount: Number,
+    category: String,
+    subcategory: String,
+    producent: String,
 })
 
 </script>
@@ -11,21 +16,44 @@ defineProps({
 <template lang="">
     <div class="LagerItemPreview-div">
         <div class="LagerItemPreviewLabel-div">
-            <label>{{name}}</label>
+            <label>Forhåndsvisning</label>
         </div>
         <div class="LagerItemPreviewBody-div">
             <div>
-                <label for="description">Description:</label>
+                <img class="LagerItemPreview-img" :src="this.imgsrc" alt=""/>
+            </div>
+            <div>
+                <label for="id">Serienummer:</label>
+                <p>{{id}}</p>
+            </div>
+            <div>
+                <label for="name">Navn:</label>
+                <p>{{name}}</p>
+            </div>
+            <div>
+                <label for="description">Beskrivelse:</label>
                 <p>{{desc}}</p>
             </div>
             <div>
-                <label for="amount">Stock:</label>
+                <label for="amount">Mængde på lager:</label>
                 <p>{{amount}}</p>
+            </div>            
+            <div>
+                <label for="amount">Kategori:</label>
+                <p>{{category.name}}</p>
+            </div>            
+            <div>
+                <label for="amount">Under Kategori:</label>
+                <p>{{subcategory.name}}</p>
+            </div>            
+            <div v-if="this.producent !== ''">
+                <label for="amount">Producent:</label>
+                <p>{{producent}}</p>
             </div>
             <div class="button-container">
-                <button class="btn btn-confirm">Restock</button>
-                <button class="btn btn-update">Update</button>
-                <button class="btn btn-danger">Delete</button>
+                <button class="btn btn-confirm">Hent</button>              
+                <button v-if="role.value == 'Admin'" class="btn btn-update">Opdatér</button>
+                <button v-if="role.value == 'Admin'" class="btn btn-danger">Slet</button>
             </div>
         </div>
     </div>
@@ -45,6 +73,10 @@ export default {
         height: 100%;
         box-shadow: 0 15px 30px 0 rgb(0 0 0 / 11%), 0 5px 15px 0 rgb(0 0 0 / 8%);
         color: white;
+        
+        div{
+            gap: 0.7em;
+        }
     }
     .LagerItemPreviewLabel-div{
         text-align: center;
@@ -67,11 +99,15 @@ export default {
             font-size: 2ch;
         }
     }
+    .LagerItemPreview-img{
+        width: 100%;
+        max-height: 20ch;
+    }
     .button-container{
         display: grid;
         gap: 1rem;
-        grid-template-columns: repeat(auto);
-        bottom: 0;
+        grid-template-columns: repeat(2, 1fr);
+        margin-top: auto;
 
         button:first-of-type{
             grid-column-start: 1;

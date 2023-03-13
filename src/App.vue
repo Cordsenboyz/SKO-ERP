@@ -2,7 +2,7 @@
 import { RouterLink, RouterView } from 'vue-router'
 import Login from './components/LoginComponents/Login.vue';
 import NavbarView from './views/NavbarView.vue'
-import { store } from './store.js'
+import { store, role } from './store.js'
 </script>
 
 <template>
@@ -31,6 +31,7 @@ import { store } from './store.js'
     created: function(){
       if(localStorage.getItem("User")){
         store.IsAuthenticated = true
+        role.value = "Admin"
       } 
     }
   }

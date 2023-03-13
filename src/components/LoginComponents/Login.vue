@@ -38,6 +38,7 @@ export default {
             if(this.Username == this.TempLoginUsername && this.Password == this.TempLoginPassword){
                 localStorage.setItem("User", JSON.stringify(this.User))
                 store.IsAuthenticated = true
+                role.value = "Admin"
             }
         }
     }

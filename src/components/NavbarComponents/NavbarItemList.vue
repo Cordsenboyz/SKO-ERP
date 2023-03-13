@@ -1,5 +1,6 @@
 <script setup>
 import { RouterLink } from 'vue-router'
+import { role} from '../../store.js'
 </script>
 
 <template lang="">
@@ -7,7 +8,7 @@ import { RouterLink } from 'vue-router'
         <nav>
             <RouterLink to="/">Home</RouterLink>
             <RouterLink to="/Lager">Lager</RouterLink>
-            <RouterLink to="/Admin">Admin</RouterLink>
+            <RouterLink v-if="role.value == 'Admin'" to="/Admin">Admin</RouterLink>
         </nav>
     </div>
 </template>

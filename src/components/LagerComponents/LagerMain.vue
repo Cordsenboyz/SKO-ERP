@@ -5,7 +5,15 @@ import LagerItemList from './LagerItemList.vue';
 
 <template lang="">
     <div class="LagerMain-div">
-        <LagerItemPreview :id="SelcetedItem.id" :name="SelcetedItem.name" :desc="SelcetedItem.desc" :amount="SelcetedItem.amount"/>
+        <LagerItemPreview 
+        :id="SelectedItem.id" 
+        :name="SelectedItem.name" 
+        :desc="SelectedItem.desc" 
+        :amount="SelectedItem.amount" 
+        :imgsrc="SelectedItem.imgsrc" 
+        :category="SelectedItem.category" 
+        :subcategory="SelectedItem.subcategory"
+        :producent="SelectedItem.producent"/>
         <LagerItemList :LagerItems="LagerItems"/>
     </div>
 </template>
@@ -14,28 +22,48 @@ import LagerItemList from './LagerItemList.vue';
 export default {
     data(){
         return{
-            SelcetedItem: [],
+            SelectedItem: [],
             LagerItems: [{
+                imgsrc: "src/assets/Skærmtest.webp",
                 id: 1,
-                name: "Skærm",
+                name: "Philips 27 4k skærm 278E1A/00",
                 desc: "Denne skærm er mega sej",
-                amount: 12,
+                amount: 100,
+                category: {
+                    id: 1,
+                    name: 'Skærm'
+                },
+                subcategory: {
+                    id: 1,
+                    name: '27"'
+                },
+                producent: "Philips",
             },
             {
+                imgsrc: "src/assets/kabeltest.webp",
                 id: 2,
-                name: "Kabel",
+                name: "aVGA_han-VGA_han",
                 desc: "Dette kabel er mega langt",
-                amount: 25, 
+                amount: 12,
+                category: {
+                    id: 2,
+                    name: 'Kabel'
+                },
+                subcategory: {
+                    id: 3,
+                    name: 'VGA'
+                },
+                producent: "",
             }],
         }
     },
     mounted: function(){
         this.emitter.on("SelectedItem", (userSelectedItem) => {
-            this.SelcetedItem = {...userSelectedItem}
+            this.SelectedItem = {...userSelectedItem}
         })
     },
     created: function(){
-        this.SelcetedItem = this.LagerItems[0]
+        this.SelectedItem = this.LagerItems[0]
     }
 }
 </script>

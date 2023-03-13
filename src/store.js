@@ -5,5 +5,5 @@ export const store = reactive({
 })
 
 export const role = reactive({
-    Role: ""
+    value: ""
 })
