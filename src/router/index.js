@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LagerView from '../views/LagerView.vue'
-import AdminView from '../views/AdminView.vue'
+import HomeView from '../views/HomeView.vue'
+import ManagerView from '../views/ManagerView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -8,6 +9,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
+      component: HomeView,
     },
     {
       path: '/Lager',
@@ -15,9 +17,9 @@ const router = createRouter({
       component: LagerView,
     },
     {
-      path: '/Admin',
-      name: 'Admin',
-      component: AdminView
+      path: '/Manager',
+      name: 'Manager',
+      component: ManagerView
     }
   ]
 })

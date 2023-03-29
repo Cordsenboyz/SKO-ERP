@@ -1,4 +1,8 @@
 <script setup lang="jsx">
+import ModalCreate from '../UtilsComponents/ModalCreate.vue';
+import {role} from '../../store.js'
+import PaginationVue from '../UtilsComponents/Pagination.vue';
+import { HubConnectionBuilder, LogLevel } from '@aspnet/signalr'
 defineProps({
     LagerItems: Object
 })
@@ -29,7 +33,7 @@ defineProps({
                         <option v-for="subcategory in GetSubCategories" :key="subcategory" :value="subcategory.id" placeholder="Under Kategori">{{subcategory.name}}</option>
                     </select>
                     <button class="btn btn-danger" @click="clearFilters()">Ryd Filtre</button>
-                    <button class="btn btn-confirm right">Tilføj</button>
+                    <button class="btn btn-confirm right" v-if="role.value == 'Admin'" @click="CreateItem()">Tilføj Produkt</button>
                 </div>
             </div>
             <div class="LagerListItemTable-div">
@@ -41,7 +45,7 @@ defineProps({
                         <div class="col col-3 sortable" @click="setProperty('category')">Kategori</div>
                         <div class="col col-4 sortable" @click="setProperty('sub-category')">Under Kategori</div>
                     </li>
-                    <li class="table-row" v-for="(Item, index, key) in filtered" :key="key" @click="SelectItem(index)">
+                    <li class="table-row" v-for="(Item, index, key) in PaginationList" :key="key" @click="SelectItem(index)">
                         <div class="col col-2">{{Item.id}}</div>
                         <div class="col col-1">{{Item.name}}</div>
                         <div class="col col-2">{{Item.amount}}</div>
@@ -50,14 +54,36 @@ defineProps({
                     </li>
                 </ul>
             </div>
+        </div>               
+        <div class="LagerFooterPagination-div">
+            <ul>
+                <li>
+                    <button type="button" class="btn" @click="onClickFirstPage" :disabled="isInFirstPage">Første</button>
+                </li>
+                <li>
+                    <button type="button" class="btn" @click="onClickPreviousPage" :disabled="isInFirstPage">Tilbage</button>
+                </li>
+                <li v-for="(page, index) in numberOfPages" :key="Item" @click="onClickPage(page)" :class="{ active: isPageActive(page) }">
+                    {{page}}
+                </li>
+                <li>
+                    <button type="button" class="btn" @click="onClickNextPage" :disabled="isInLastPage">Næste</button>
+                </li>
+                <li>
+                    <button type="button" class="btn" @click="onClickLastPage" :disabled="isInLastPage">Sidste</button>
+                </li>
+            </ul>
         </div>
     </div>
+    <ModalCreate v-if="role.value == 'Admin'" :show="showModalCreate" :cancel="cancel" :confirm="confirm" :SubmitCreate="SubmitCreate" :Item="Item"/>
 </template>
 
 <script lang="jsx">
 export default {
     data(){
         return{
+            connection: null,
+            showModalCreate: false,
             search: "",
             property: "name",
             isAscending: false,
@@ -83,6 +109,20 @@ export default {
                     name: 'VGA'
                 }]
             }],
+            Item: {
+                id: 0,
+                name: "",
+                desc: "",
+                amount: 0,
+                category: "",
+                subcategory: "",
+                producent: "",
+                barcode: "",
+                imgFile: File 
+            },
+            isInFirstPage: false,
+            itemsPerPage: 7,
+            currentPage: 1,
         }
     },
     computed: {
@@ -114,9 +154,57 @@ export default {
             })
             const filtered = filteredList.sort((a, b) => a[this.property] > b[this.property] ? 1 : -1);
             return this.isAscending ? filtered : filtered.reverse();
-        }
+        },
+        PaginationList(){
+            const indexOfLast = this.currentPage * this.itemsPerPage
+            const indexOfFirst = indexOfLast - this.itemsPerPage
+            const PaginationList = this.filtered.slice(indexOfFirst, indexOfLast)
+            return PaginationList
+        },
+        numberOfPages(){
+            return Math.ceil(this.filtered.length / this.itemsPerPage)
+        }, 
+        isInFirstPage() {
+            return this.currentPage === 1;
+        },
+        isInLastPage() {
+            return this.currentPage === this.numberOfPages;
+        },
+    },
+    mounted: function(){
+        this.connection = new HubConnectionBuilder()
+            .withUrl('https://localhost:7203/Lager')
+            .build()
+
+        this.connection.start()
+        this.connection.on("UpdateLager", (message) => {
+            console.log(message)
+        })
+    },
+    unmounted: function(){
+        this.connection.stop()
     },
     methods:{
+        CreateItem: function(){
+            this.showModalCreate = true;
+        },
+        cancel: function(){
+            this.showModalCreate = false;
+        },
+        confirm: function(){
+            this.showModalCreate = false;
+        },
+        SubmitCreate: async function(event){
+            event.preventDefault()
+            console.log(this.Item)
+            this.Item.amount += 1
+            this.LagerItems.push(this.Item)
+            try {
+                await this.connection.invoke("UpdateData", JSON.stringify(this.Item));
+            } catch (err) {
+                console.error(err);
+            }
+        },
         SelectItem: function(index){
             this.emitter.emit("SelectedItem", (this.sorted[index]))
         },
@@ -147,7 +235,25 @@ export default {
         },
         clearSubFilters: function(){
             this.subCategoryFilter = "";
-        }
+        },
+        onClickPage: function(page){
+            this.currentPage = page
+        },
+        onClickFirstPage() {
+            this.currentPage = 1;
+        },
+        onClickPreviousPage() {
+            this.currentPage -= 1;
+        },
+        onClickNextPage() {
+            this.currentPage += 1;
+        },
+        onClickLastPage() {
+            this.currentPage = this.numberOfPages;
+        },
+        isPageActive(page) {
+            return this.currentPage === page;
+        },
     },
 
 }
@@ -163,6 +269,9 @@ export default {
         color: white;
         box-shadow: 0 15px 30px 0 rgb(0 0 0 / 11%), 0 5px 15px 0 rgb(0 0 0 / 8%);
         text-align: center;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
     }
     .LagerItemList-body{
         padding: 1rem;
@@ -170,6 +279,7 @@ export default {
     .LagerItemListlabel-div{
         padding: 1rem;
         border-bottom: 2px solid rgba(246,76,114,1);
+        background-color: var(--primary-element);
 
         label{
             font-weight: bold;
@@ -203,6 +313,7 @@ export default {
     .filter-container{
         display: flex;
         align-items: center;
+        width: 100%;
         gap: 0.5em;
     }
     .sortable{
@@ -337,6 +448,33 @@ export default {
             flex-basis: 50%;
             text-align: right;
         }
+        }
+    }
+    .LagerFooterPagination-div{
+        margin-top: auto;
+        background-color: hsl(197, 100%, 30%);
+        height: 3rem;
+        
+        ul{
+            list-style-type: none;
+            height: 100%;
+            padding: 0;
+            display: grid;
+            grid-template-columns: auto;
+            grid-auto-flow: column;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5em;
+
+            li{
+                min-width: 3rem;
+
+                &.active{
+                    border: 2px solid white;
+                    border-radius: 0.5em;
+                    background-color: hsl(197, 100%, 40%);
+                }
+            }
         }
     }
     

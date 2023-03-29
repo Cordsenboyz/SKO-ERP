@@ -1,28 +1,25 @@
 <script setup lang="jsx">
 import LagerItemPreview from './LagerItemPreview.vue';
 import LagerItemList from './LagerItemList.vue';
+import { HubConnectionBuilder, LogLevel } from '@aspnet/signalr'
 </script>
 
 <template lang="">
     <div class="LagerMain-div">
-        <LagerItemPreview 
-        :id="SelectedItem.id" 
-        :name="SelectedItem.name" 
-        :desc="SelectedItem.desc" 
-        :amount="SelectedItem.amount" 
-        :imgsrc="SelectedItem.imgsrc" 
-        :category="SelectedItem.category" 
-        :subcategory="SelectedItem.subcategory"
-        :producent="SelectedItem.producent"/>
+        <LagerItemPreview :SelectedItem="SelectedItem" />
         <LagerItemList :LagerItems="LagerItems"/>
     </div>
 </template>
 
 <script lang="jsx">
+
+
+
 export default {
     data(){
         return{
             SelectedItem: [],
+            connection: null,
             LagerItems: [{
                 imgsrc: "src/assets/Skærmtest.webp",
                 id: 1,
@@ -38,6 +35,7 @@ export default {
                     name: '27"'
                 },
                 producent: "Philips",
+                barcode: "1829-291-2918",
             },
             {
                 imgsrc: "src/assets/kabeltest.webp",
@@ -54,6 +52,7 @@ export default {
                     name: 'VGA'
                 },
                 producent: "",
+                barcode: "9382-172-8472",
             }],
         }
     },

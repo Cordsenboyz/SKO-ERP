@@ -7,9 +7,9 @@ import { store, role } from './store.js'
 
 <template>
   <div v-if="store.IsAuthenticated">
-    <section>
+    <header>
       <NavbarView />
-    </section>
+    </header>
     <section>
       <RouterView />
     </section>
@@ -24,16 +24,19 @@ import { store, role } from './store.js'
   export default {
     data() {
       return{
+        connection: null,
       }
     },
     methods: {
     },
     created: function(){
       if(localStorage.getItem("User")){
+        const user = JSON.parse(localStorage.getItem("User"))
         store.IsAuthenticated = true
-        role.value = "Admin"
-      } 
-    }
+        role.value = user.Role
+      }
+    },
+
   }
 </script>
 

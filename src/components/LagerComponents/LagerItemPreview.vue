@@ -1,15 +1,9 @@
 <script setup lang="jsx">
 import { role } from '../../store.js'
 import Dialog from '../UtilsComponents/Dialog.vue';
+import ModalUpdate from '../UtilsComponents/ModalUpdate.vue';
 defineProps({
-    imgsrc: String,
-    id: Number,
-    name: String,
-    desc: String,
-    amount: Number,
-    category: Object,
-    subcategory: Object,
-    producent: String,
+    SelectedItem: Object
 })
 
 </script>
@@ -21,44 +15,49 @@ defineProps({
         </div>
         <div class="LagerItemPreviewBody-div">
             <div>
-                <img class="LagerItemPreview-img" :src="this.imgsrc" alt=""/>
+                <img class="LagerItemPreview-img" :src="SelectedItem.imgsrc" alt=""/>
             </div>
             <div>
                 <label for="id">Serienummer:</label>
-                <p>{{id}}</p>
+                <p>{{SelectedItem.id}}</p>
             </div>
             <div>
                 <label for="name">Navn:</label>
-                <p>{{name}}</p>
+                <p>{{SelectedItem.name}}</p>
             </div>
             <div>
                 <label for="description">Beskrivelse:</label>
-                <p>{{desc}}</p>
+                <p>{{SelectedItem.desc}}</p>
             </div>
             <div>
                 <label for="amount">Mængde på lager:</label>
-                <p>{{amount}}</p>
+                <p>{{SelectedItem.amount}}</p>
             </div>            
             <div>
                 <label for="amount">Kategori:</label>
-                <p>{{category.name}}</p>
+                <p>{{SelectedItem.category.name}}</p>
             </div>            
             <div>
                 <label for="amount">Under Kategori:</label>
-                <p>{{subcategory.name}}</p>
+                <p>{{SelectedItem.subcategory.name}}</p>
             </div>            
             <div v-if="this.producent !== ''">
                 <label for="amount">Producent:</label>
-                <p>{{producent}}</p>
+                <p>{{SelectedItem.producent}}</p>
             </div>
+            <div>
+                <label for="amount">Barcode:</label>
+                <p>{{SelectedItem.barcode}}</p>
+            </div>  
             <div class="button-container">
                 <button class="btn btn-confirm">Hent</button>              
-                <button v-if="role.value == 'Admin'" class="btn btn-update">Opdatér</button>
+                <button v-if="role.value == 'Admin'" class="btn btn-update" @click="UpdateItem()">Opdatér</button>
                 <button v-if="role.value == 'Admin'" class="btn btn-danger" @click="DeleteItem()">Slet</button>
             </div>
         </div>
     </div>
-    <Dialog v-if="role.value == 'Admin'" :show="showDialog" :cancel="cancel" :confirm="confirm" title="Slet product" description="Du skal kun slette dette product hvis du er sikker på der ikke er mere på lageret" />
+    <Dialog v-if="role.value == 'Admin'" :show="showDialog" :cancel="DeleteCancel" :confirm="DeleteConfirm" title="Slet produkt" description="Du skal kun slette dette produkt hvis du er sikker på der ikke er mere på lageret" />
+    <ModalUpdate v-if="role.value == 'Admin' && showModalUpdate" :cancel="UpdateCancel" :confirm="UpdateConfirm" :SubmitCreate="SubmitUpdate" :LagerItem="Item"/>
 </template>
 
 <script lang="jsx">
@@ -66,18 +65,34 @@ export default {
     data(){
         return{
             showDialog: false,
+            showModalUpdate: false,
+            Item: Object
         }
     },
     methods: {
         DeleteItem: function(){
             this.showDialog = true;
         },
-        cancel: function(){
+        DeleteCancel: function(){
             this.showDialog = false;
         },
-        confirm: function(){
+        DeleteConfirm: function(){
             this.emitter.emit("DeleteItem", this.id)
             this.showDialog = false;
+        },
+        SubmitUpdate: function(e){
+            e.preventDefault()
+            this.showModalUpdate = false;
+        },
+        UpdateItem: function(){
+            this.Item = {...this.SelectedItem}
+            this.showModalUpdate = true;
+        },
+        UpdateCancel: function(){
+            this.showModalUpdate = false;
+        },
+        UpdateConfirm: function(){
+            this.showModalUpdate = false;
         },
     }
 }
@@ -91,6 +106,7 @@ export default {
         height: 100%;
         box-shadow: 0 15px 30px 0 rgb(0 0 0 / 11%), 0 5px 15px 0 rgb(0 0 0 / 8%);
         color: white;
+        overflow: hidden;
         
         div{
             gap: 0.7em;
@@ -100,6 +116,7 @@ export default {
         text-align: center;
         padding: 1rem;
         border-bottom: 2px solid rgba(246,76,114,1);
+        background-color: var(--primary-element);
         
         Label{
            font-size: 3ch;

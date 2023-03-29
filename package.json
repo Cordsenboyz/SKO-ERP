@@ -10,12 +10,16 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "chart.js": "^4.2.1",
     "mitt": "^3.0.0",
     "sass": "^1.58.3",
     "vue": "^3.2.47",
+    "vue-barcode-reader": "^1.0.3",
+    "vue-chartjs": "^5.2.0",
     "vue-router": "^4.1.6"
   },
   "devDependencies": {
+    "@aspnet/signalr": "^1.0.27",
     "@rushstack/eslint-patch": "^1.2.0",
     "@vitejs/plugin-vue": "^4.0.0",
     "@vitejs/plugin-vue-jsx": "^3.0.0",

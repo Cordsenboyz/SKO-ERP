@@ -8,13 +8,19 @@ import { role} from '../../store.js'
         <nav>
             <RouterLink to="/">Home</RouterLink>
             <RouterLink to="/Lager">Lager</RouterLink>
-            <RouterLink v-if="role.value == 'Admin'" to="/Admin">Admin</RouterLink>
+            <RouterLink v-if="roles == 'Admin' " to="/Manager">Admin</RouterLink>
+            <RouterLink v-if="roles == 'Manager' " to="/Manager">Lån</RouterLink>
         </nav>
     </div>
 </template>
 <script>
 export default {
-    
+    computed: {
+        roles(){
+            const roles = role.value
+            return roles
+        }
+    }
 }
 </script>
 <style scoped lang="scss">

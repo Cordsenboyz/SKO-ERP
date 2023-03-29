@@ -1,5 +1,5 @@
 <script setup lang="jsx">
-import {store} from "../../store.js"
+import {store, role} from "../../store.js"
 </script>
 
 <template lang="">
@@ -22,23 +22,51 @@ export default {
             Username: "",
             Password: "",
 
-            TempLoginUsername: "Admin",
-            TempLoginPassword: "Password",
-            User: {
+            TempAdminLoginUsername: "Admin",
+            TempAdminLoginPassword: "Password",
+            TempBrugerLoginUsername: "User",     
+            TempBrugerLoginPassword: "Password",             
+            TempManagerLoginUsername: "Manager",     
+            TempManagerLoginPassword: "Password",     
+            AdminUser: {
                 Username: "Admin",
+                name: "Daniel Simonsen",
                 Email: "Admin@sko-erp.dk",
                 Role: "Admin",
+                AccessToken: "ergergergergergergergergfdsfdftrsgervxfvgsrgvv"
+            },
+            BrugerUser: {
+                Username: "Bruger",
+                name: "Lasse Lund Madsen",
+                Email: "Bruger@sko-erp.dk",
+                Role: "Bruger",
+                AccessToken: "ergergergergergergergergfdsfdftrsgervxfvgsrgvv"
+            }
+            ,
+            ManagerUser: {
+                Username: "Manager",
+                name: "Omid",
+                Email: "Manager@sko-erp.dk",
+                Role: "Manager",
                 AccessToken: "ergergergergergergergergfdsfdftrsgervxfvgsrgvv"
             }
         }
     },
     methods: {
-        Login: function(event){
+        Login: async function(event){
             event.preventDefault();
-            if(this.Username == this.TempLoginUsername && this.Password == this.TempLoginPassword){
-                localStorage.setItem("User", JSON.stringify(this.User))
+            if(this.Username == this.TempAdminLoginUsername && this.Password == this.TempAdminLoginPassword){
+                localStorage.setItem("User", JSON.stringify(this.AdminUser))
+                role.value = this.AdminUser.Role
                 store.IsAuthenticated = true
-                role.value = "Admin"
+            }else if(this.Username == this.TempBrugerLoginUsername && this.Password == this.TempBrugerLoginPassword){
+                localStorage.setItem("User", JSON.stringify(this.BrugerUser))
+                role.value = this.BrugerUser.Role
+                store.IsAuthenticated = true
+            }else if(this.Username == this.TempManagerLoginUsername && this.Password == this.TempManagerLoginPassword){
+                localStorage.setItem("User", JSON.stringify(this.ManagerUser))
+                role.value = this.ManagerUser.Role
+                store.IsAuthenticated = true
             }
         }
     }

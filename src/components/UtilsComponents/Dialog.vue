@@ -7,8 +7,8 @@
                     <p class="dialog__description" v-text="description"></p>
                 </div>
                 <div class="dialog__footer">
-                    <button @click="cancel" class="dialog__cancel">Cancel</button>
-                    <button @click="confirm" class="dialog__confirm">Yes, delete it</button>
+                    <button @click="cancel" class="btn btn-cancel">Fortryd</button>
+                    <button @click="confirm" class="btn btn-danger">Ja, Slet</button>
                 </div>
             </div>
         </div>
@@ -53,7 +53,7 @@
     .dialog__footer {
         display: flex;
         justify-content: flex-end;
-        padding-top: 1rem;
-        padding-bottom: 1rem;
+        padding: 1rem;
+        gap: 0.5em
     }
 </style>
