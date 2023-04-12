@@ -13,12 +13,17 @@ defineProps({
         <div class="col col-2">{{Item.dateFrom}}</div>
         <div class="col col-2">{{Item.dateToo}}</div>
         <button class="btn btn-confirm">Acceptér</button>
-        <button class="btn btn-danger">Afvis</button>
+        <button class="btn btn-danger" @click="DeclineBorrow()">Afvis</button>
     </li>
 </template>
 
 <script lang="jsx">
 export default {
+    methods: {
+        DeclineBorrow: function(){
+            this.emitter.emit("DeclineBorrow", (this.Item))
+        }
+    }
 }
 </script>
 
@@ -33,7 +38,7 @@ export default {
         list-style: none;
         background-color: var(--secondary-element);
         box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.1);
-        color: white;
+        color: var(--light-textcolor);
         gap: 0.5em;
     }
     .col-1 {

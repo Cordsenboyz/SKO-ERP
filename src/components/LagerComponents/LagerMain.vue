@@ -2,6 +2,8 @@
 import LagerItemPreview from './LagerItemPreview.vue';
 import LagerItemList from './LagerItemList.vue';
 import { HubConnectionBuilder, LogLevel } from '@aspnet/signalr'
+import {toRaw} from 'vue'
+import axios from 'axios'
 </script>
 
 <template lang="">
@@ -18,45 +20,13 @@ import { HubConnectionBuilder, LogLevel } from '@aspnet/signalr'
 export default {
     data(){
         return{
-            SelectedItem: [],
+            SelectedItem: {},
             connection: null,
-            LagerItems: [{
-                imgsrc: "src/assets/Skærmtest.webp",
-                id: 1,
-                name: "Philips 27 4k skærm 278E1A/00",
-                desc: "Denne skærm er mega sej",
-                amount: 100,
-                category: {
-                    id: 1,
-                    name: 'Skærm'
-                },
-                subcategory: {
-                    id: 1,
-                    name: '27"'
-                },
-                producent: "Philips",
-                barcode: "1829-291-2918",
-            },
-            {
-                imgsrc: "src/assets/kabeltest.webp",
-                id: 2,
-                name: "aVGA_han-VGA_han",
-                desc: "Dette kabel er mega langt",
-                amount: 12,
-                category: {
-                    id: 2,
-                    name: 'Kabel'
-                },
-                subcategory: {
-                    id: 3,
-                    name: 'VGA'
-                },
-                producent: "",
-                barcode: "9382-172-8472",
-            }],
+            LagerItems: [],
         }
     },
     mounted: function(){
+        this.SelectedItem === toRaw(this.LagerItems[0])
         this.emitter.on("SelectedItem", (userSelectedItem) => {
             this.SelectedItem = {...userSelectedItem}
         })
@@ -67,9 +37,23 @@ export default {
             this.LagerItems.splice(idxObj, 1)
             this.SelectedItem = this.LagerItems[0]         
         })
+        this.emitter.on("UpdateLager", () => {
+            this.GetUpdatedData()
+        })
     },
-    created: function(){
-        this.SelectedItem = this.LagerItems[0]
+    created: async function(){
+        let token = localStorage.getItem("token")
+        let response = await axios.get("https://localhost:7203/GetAllItems/GetAllItems", {
+            headers: { Authorization: `Bearer ${token}` }})
+        this.LagerItems = response.data
+    },
+    methods: {
+        GetUpdatedData: async function(){
+            let token = localStorage.getItem("token")
+            let response = await axios.get("https://localhost:7203/GetAllItems/GetAllItems", {
+                headers: { Authorization: `Bearer ${token}` }})
+            this.LagerItems = response.data
+        }
     }
 }
 </script>

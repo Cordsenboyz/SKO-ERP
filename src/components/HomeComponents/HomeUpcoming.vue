@@ -141,7 +141,7 @@ export default {
         overflow: hidden;
 
         label{
-            color: white;
+            color: var(--light-textcolor);
             font-weight: bold;
             font-size: 3ch;
         }
@@ -153,7 +153,7 @@ export default {
     .HomeUpcomingLabel-div{
         padding: 0.5em;
         background-color: var(--primary-element);
-        border-bottom: 2px solid rgba(246,76,114,1);
+        border-bottom: 2px solid var(--primary-ascent);
     }
     .HomeUpcomingBody-div{
         padding: 1em;
@@ -168,7 +168,7 @@ export default {
     }
     .responsive-table {
         padding: 0;
-        color: white;
+        color: var(--light-textcolor);
         
         li {
             border-radius: 3px;
@@ -196,8 +196,8 @@ export default {
         flex-basis: 25%;
     }
     .loader {
-        border: 8px solid #ffffff;
-        border-top: 8px solid var(--vt-c-black-mute);
+        border: 8px solid var(--light-loading);
+        border-top: 8px solid var(--dark-loading);
         border-radius: 50%;
         width: 5rem;
         height: 5rem;

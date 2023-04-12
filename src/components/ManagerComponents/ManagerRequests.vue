@@ -84,6 +84,11 @@ export default {
             const RequestList = this.TempData
             return RequestList
         }
+    },
+    mounted: function(){
+        this.emitter.on("DeclineBorrow", (item) => {
+            this.TempData.splice(this.TempData.indexOf(item), 1)
+        })
     }
 }
 </script>

@@ -33,7 +33,7 @@ export default {
         grid-template-rows: 100%;
 
         gap: 1em;
-        color: white;
+        color: var(--light-textcolor);
 
         >div{
             background-color: var(--primary-background);

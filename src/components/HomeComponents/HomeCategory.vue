@@ -54,7 +54,7 @@ export default {
         overflow: hidden;
 
         label{
-            color: white;
+            color: var(--light-textcolor);
             font-weight: bold;
             font-size: 2.5ch;
         }
@@ -63,7 +63,7 @@ export default {
         width: 100%;
         padding: 0.5em;
         background-color: var(--primary-element);
-        border-bottom: 2px solid rgba(246,76,114,1);
+        border-bottom: 2px solid var(--primary-ascent);
     }
     .HomeCategory-chart{
         height: calc(100% - 4em);

@@ -7,3 +7,9 @@ export const store = reactive({
 export const role = reactive({
     value: ""
 })
+
+export const user = reactive({
+    data: {
+        username: ""
+    } 
+})

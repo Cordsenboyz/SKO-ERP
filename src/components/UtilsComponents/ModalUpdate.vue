@@ -70,8 +70,8 @@ export default {
         width: 24rem;
         margin: 0px auto;
         padding: 5px;
-        background-color: hsl(197, 100%, 22%);
-        color: rgb(238, 238, 238);
+        background-color: var(--primary-background);
+        color: var(--light-textcolor);
         border-radius: 10px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
         transition: all 0.3s ease;
@@ -107,11 +107,11 @@ export default {
         border: unset;
         padding: 0.5em;
         &:focus{
-            outline-color: hsl(197, 100%, 30%);
+            outline-color: var(--primary-element);
         }
     }
     .form-title{
-        color: white;
+        color: var(--light-textcolor);
         font-weight: bold;
         text-align: center;
     }

@@ -96,7 +96,7 @@ export default {
             text-overflow: ellipsis;
 
             label{
-                color: white;
+                color: var(--light-textcolor);
                 font-weight: bold;
                 font-size: 3ch;
             }

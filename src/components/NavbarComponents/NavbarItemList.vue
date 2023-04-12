@@ -25,7 +25,7 @@ export default {
 </script>
 <style scoped lang="scss">
     .NavItems nav a{
-        color: White;
+        color: var(--light-textcolor);
         text-decoration: none;
         font-weight: bold;
         font-family: sans-serif;

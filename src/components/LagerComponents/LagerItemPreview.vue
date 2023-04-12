@@ -14,9 +14,9 @@ defineProps({
             <label>Forhåndsvisning</label>
         </div>
         <div class="LagerItemPreviewBody-div">
-            <div>
+<!--             <div>
                 <img class="LagerItemPreview-img" :src="SelectedItem.imgsrc" alt=""/>
-            </div>
+            </div> -->
             <div>
                 <label for="id">Serienummer:</label>
                 <p>{{SelectedItem.id}}</p>
@@ -27,20 +27,20 @@ defineProps({
             </div>
             <div>
                 <label for="description">Beskrivelse:</label>
-                <p>{{SelectedItem.desc}}</p>
+                <p>{{SelectedItem.description}}</p>
             </div>
             <div>
                 <label for="amount">Mængde på lager:</label>
                 <p>{{SelectedItem.amount}}</p>
             </div>            
-            <div>
+<!--             <div>
                 <label for="amount">Kategori:</label>
                 <p>{{SelectedItem.category.name}}</p>
-            </div>            
+            </div>
             <div>
                 <label for="amount">Under Kategori:</label>
-                <p>{{SelectedItem.subcategory.name}}</p>
-            </div>            
+                <p>{{SelectedItem.category.subCategory.name}}</p>
+            </div>          -->
             <div v-if="this.producent !== ''">
                 <label for="amount">Producent:</label>
                 <p>{{SelectedItem.producent}}</p>
@@ -77,7 +77,7 @@ export default {
             this.showDialog = false;
         },
         DeleteConfirm: function(){
-            this.emitter.emit("DeleteItem", this.id)
+            this.emitter.emit("DeleteItem", this.SelectedItem.id)
             this.showDialog = false;
         },
         SubmitUpdate: function(e){
@@ -94,18 +94,18 @@ export default {
         UpdateConfirm: function(){
             this.showModalUpdate = false;
         },
-    }
+    },
 }
 </script>
 
 <style scoped lang="scss">
     .LagerItemPreview-div{
         width: 20%;
-        background-color: #005070;
-        border-radius: 0.5em;
+        background-color: var(--primary-background);
+        border-radius: 0.5em;   
         height: 100%;
         box-shadow: 0 15px 30px 0 rgb(0 0 0 / 11%), 0 5px 15px 0 rgb(0 0 0 / 8%);
-        color: white;
+        color: var(--light-textcolor);
         overflow: hidden;
         
         div{
@@ -115,7 +115,7 @@ export default {
     .LagerItemPreviewLabel-div{
         text-align: center;
         padding: 1rem;
-        border-bottom: 2px solid rgba(246,76,114,1);
+        border-bottom: 2px solid var(--primary-ascent);
         background-color: var(--primary-element);
         
         Label{

@@ -1,23 +1,22 @@
+<script setup lang="jsx">
+import {user} from '../../store.js'
+</script>
+
 <template lang="">
     <div class="HomeProfile-div">
-        <label>Hej, {{user.name}}</label>
+        <label>Hej, {{user.data.username}}</label>
         <div class="HomeProfileBtn-container">
             <button class="btn btn-update">Redigér</button>
             <button class="btn btn-confirm">Profil</button>
         </div>
     </div>
 </template>
-<script>
+
+<script lang="jsx">
 export default {
     data(){
         return{
 
-        }
-    },
-    computed: {
-        user(){
-            const user = JSON.parse(localStorage.getItem("User"))
-            return user
         }
     }
 }
@@ -32,7 +31,7 @@ export default {
         align-items: center;
 
         label{
-            color: white;
+            color: var(--light-textcolor);
             font-weight: bold;
             font-size: 4ch;
             text-align: center;

@@ -34,7 +34,7 @@ export default {
         list-style: none;
         background-color: var(--secondary-element);
         box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.1);
-        color: white;
+        color: var(--light-textcolor);
     }
     .col-1 {
         flex-basis: 30%;

@@ -12,9 +12,8 @@ defineProps({
         <div class="col col-2">{{Item.email}}</div>
         <div class="col col-2">{{Item.role}}</div>
         <button class="btn btn-confirm" @click="ShowModal()">Vis Profil</button>
-        <button class="btn btn-danger">Slet</button>
+        <button class="btn btn-danger" @click="DeleteUser()">Slet</button>
     </li>
-    <ModalProfile v-if="role.value === 'Admin' && showModal == true" :cancel="cancel" :confirm="confirm" :UpdateUser="UpdateUser" :Item="Item"/>
 </template>
 
 <script lang="jsx">
@@ -26,17 +25,10 @@ export default {
     },
     methods:{
         ShowModal: function(){
-            this.showModal = true
+            this.emitter.emit("ShowProfileModal", (this.Item))
         },
-        cancel:function(){
-            this.showModal = false
-        },
-        confirm: function(){
-            this.showModal = false
-        },
-        UpdateUser: function(event){
-            event.preventDefault()
-            console.log(event)
+        DeleteUser: function(){
+            this.emitter.emit("DeleteUser", (this.Item))
         }
     }
 }
@@ -53,7 +45,7 @@ export default {
         list-style: none;
         background-color: var(--secondary-element);
         box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.1);
-        color: white;
+        color: var(--light-textcolor);
         gap: 0.5em;
     }
     .col-1 {

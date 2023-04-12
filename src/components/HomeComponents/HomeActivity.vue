@@ -90,7 +90,7 @@ export default {
         overflow: hidden;
 
         label{
-            color: white;
+            color: var(--light-textcolor);
             font-weight: bold;
             font-size: 3ch;
         }
@@ -100,7 +100,7 @@ export default {
         height: 100%;
     }
     .HomeActivityLabel-div{
-        border-bottom: 2px solid rgba(246,76,114,1);
+        border-bottom: 2px solid var(--primary-ascent);
         background-color: var(--primary-element);
         padding: 0.5em;
     }
@@ -118,8 +118,8 @@ export default {
         justify-content: center;
     }
     .loader {
-        border: 8px solid #ffffff;
-        border-top: 8px solid var(--vt-c-black-mute);
+        border: 8px solid var(--light-loading);
+        border-top: 8px solid var(--dark-loading);
         border-radius: 50%;
         width: 5rem;
         height: 5rem;
@@ -131,7 +131,7 @@ export default {
     }
     .responsive-table {
         padding: 0;
-        color: white;
+        color: var(--light-textcolor);
         
         li {
             border-radius: 3px;

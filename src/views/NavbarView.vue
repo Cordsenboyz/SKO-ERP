@@ -18,9 +18,12 @@ import { store } from '../store';
 export default {
     methods: {
         Logout: function(){
-            localStorage.removeItem("User")
+            localStorage.removeItem("token")
             store.IsAuthenticated = false
         }
+    },
+    mounted: function(){
+
     }
 }
 </script>
@@ -28,7 +31,7 @@ export default {
     .Navbar-div{
         top: 0;
         width: 100%;
-        color: white;
+        color: var(--light-textcolor);
         height: 3.5rem;
         display: flex;
         background: linear-gradient(90deg, rgba(251,166,28,1) 0%, rgba(246,76,114,1) 75%);
@@ -70,7 +73,7 @@ export default {
         background-color: unset;
         border: 2px solid White;
         border-radius: 0.5em;
-        color: White;
+        color: var(--light-textcolor);
         font-weight: bold;
         padding: 0.5em;
         

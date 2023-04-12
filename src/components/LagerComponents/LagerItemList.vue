@@ -1,10 +1,12 @@
 <script setup lang="jsx">
 import ModalCreate from '../UtilsComponents/ModalCreate.vue';
 import {role} from '../../store.js'
-import PaginationVue from '../UtilsComponents/Pagination.vue';
 import { HubConnectionBuilder, LogLevel } from '@aspnet/signalr'
+import axios from 'axios'
+
 defineProps({
-    LagerItems: Object
+    LagerItems: Object,
+    isLoading: Boolean
 })
 
 </script>
@@ -50,7 +52,7 @@ defineProps({
                         <div class="col col-1">{{Item.name}}</div>
                         <div class="col col-2">{{Item.amount}}</div>
                         <div class="col col-3">{{Item.category.name}}</div>
-                        <div class="col col-4">{{Item.subcategory.name}}</div>
+                        <div class="col col-4">{{Item.category.subCategory.name}}</div>
                     </li>
                 </ul>
             </div>
@@ -86,7 +88,7 @@ export default {
             showModalCreate: false,
             search: "",
             property: "name",
-            isAscending: false,
+            isAscending: true,
             categoryFilter: "",
             subCategoryFilter: "",
             categories: [{
@@ -110,15 +112,14 @@ export default {
                 }]
             }],
             Item: {
-                id: 0,
                 name: "",
-                desc: "",
+                description: "",
                 amount: 0,
                 category: "",
                 subcategory: "",
                 producent: "",
-                barcode: "",
-                imgFile: File 
+                barcode: "",/* 
+                imgFile: File  */
             },
             isInFirstPage: false,
             itemsPerPage: 7,
@@ -178,7 +179,7 @@ export default {
 
         this.connection.start()
         this.connection.on("UpdateLager", (message) => {
-            console.log(message)
+            this.emitter.emit("UpdateLager")
         })
     },
     unmounted: function(){
@@ -196,14 +197,12 @@ export default {
         },
         SubmitCreate: async function(event){
             event.preventDefault()
-            console.log(this.Item)
-            this.Item.amount += 1
-            this.LagerItems.push(this.Item)
-            try {
-                await this.connection.invoke("UpdateData", JSON.stringify(this.Item));
-            } catch (err) {
-                console.error(err);
-            }
+            let dbData = {...this.Item}
+            dbData.amount += 1
+            let token = localStorage.getItem("token")
+            await axios.post('https://localhost:7203/PostItem/PostItem', dbData, {
+                headers: { Authorization: `Bearer ${token}` }
+            })
         },
         SelectItem: function(index){
             this.emitter.emit("SelectedItem", (this.sorted[index]))
@@ -265,8 +264,8 @@ export default {
         margin-left: 1rem;
         height: 100%;
         border-radius: 0.5em;
-        background-color: hsl(197, 100%, 22%);
-        color: white;
+        background-color: var(--primary-background);
+        color: var(--light-textcolor);
         box-shadow: 0 15px 30px 0 rgb(0 0 0 / 11%), 0 5px 15px 0 rgb(0 0 0 / 8%);
         text-align: center;
         display: flex;
@@ -278,7 +277,7 @@ export default {
     }
     .LagerItemListlabel-div{
         padding: 1rem;
-        border-bottom: 2px solid rgba(246,76,114,1);
+        border-bottom: 2px solid var(--primary-ascent);
         background-color: var(--primary-element);
 
         label{
@@ -303,7 +302,7 @@ export default {
         font-size: 12px;
 
         &:focus{
-            outline-color: hsl(197, 100%, 30%);
+            outline-color: var(--primary-element);
         }
 
         option{
@@ -334,7 +333,7 @@ export default {
         font-size: 12px;
 
         &:focus{
-            outline-color: hsl(197, 100%, 30%);
+            outline-color: var(--primary-element);
         }
     }
     
@@ -361,7 +360,7 @@ export default {
         padding: 0 10px;
         margin: 0;
         cursor: pointer;
-        color: #475669;
+        color: var(--dark-textcolor);
         font-size: 14px;
         white-space: nowrap;
         overflow: hidden;
@@ -373,7 +372,7 @@ export default {
 
         &:hover{
             background-color: hsl(0, 0%, 50%);
-            color: white;
+            color: var(--light-textcolor);
         }
     }
     .search-div{
@@ -408,17 +407,17 @@ export default {
     }
 
     .table-header {
-        background-color: hsl(197, 100%, 30%);
+        background-color: var(--primary-element);
         font-size: 14px;
         text-transform: uppercase;
         letter-spacing: 0.03em;
     }
     .table-row {
-        background-color: hsl(197, 100%, 40%);
+        background-color: var(--secondary-element);
         box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.1);
 
         &:hover{
-            background-color: hsl(197, 100%, 35%);
+            background-color: var(--secondary-element-hover);
         }
     }
 
@@ -452,7 +451,7 @@ export default {
     }
     .LagerFooterPagination-div{
         margin-top: auto;
-        background-color: hsl(197, 100%, 30%);
+        background-color: var(--primary-element);
         height: 3rem;
         
         ul{
@@ -472,7 +471,7 @@ export default {
                 &.active{
                     border: 2px solid white;
                     border-radius: 0.5em;
-                    background-color: hsl(197, 100%, 40%);
+                    background-color: var(--secondary-element);
                 }
             }
         }
