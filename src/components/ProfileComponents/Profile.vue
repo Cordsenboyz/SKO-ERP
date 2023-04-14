@@ -8,7 +8,7 @@ defineProps({
     <div v-if="!isLoading && !profileEditMode" class="Profile-body">
         <img :src="Item.imgUrl || 'src/assets/user-solid.svg'" alt="Personens profil billede"/>
         <label>Navn:</label>
-        <p>{{Item.name}}</p>
+        <p>{{Item.fullName}}</p>
         <label>Email:</label>
         <p>{{Item.email}}</p>
         <label>Telefon Nummer:</label>
@@ -20,7 +20,7 @@ defineProps({
     <div v-else-if="!isLoading && profileEditMode" class="ProfileEdit-body">
         <form class="Profile-body" @submit="UpdateUser($event)">
             <img :src="Item.imgUrl || 'src/assets/user-solid.svg'" alt="Personens profil billede"/>
-            <label>Navn: {{Item.name}}</label>
+            <label>Navn: {{Item.fullName}}</label>
             <input v-model="editItem.name" />
             <label>Email: {{Item.email}}</label>
             <input v-model="editItem.email" />
@@ -46,7 +46,7 @@ export default {
             isLoading: true,
             profileEditMode: false,
             editItem: {},
-        }
+        } 
     },
     mounted: function(){
         if(this.Item){

@@ -8,7 +8,7 @@ defineProps({
 
 <template lang="">
     <li>
-        <div class="col col-2">{{Item.name}}</div>
+        <div class="col col-2">{{Item.fullName}}</div>
         <div class="col col-2">{{Item.email}}</div>
         <div class="col col-2">{{Item.role}}</div>
         <button class="btn btn-confirm" @click="ShowModal()">Vis Profil</button>

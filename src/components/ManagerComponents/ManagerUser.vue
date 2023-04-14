@@ -1,7 +1,9 @@
 <script setup lang="jsx">
+import { toRaw } from 'vue';
 import { role } from '../../store.js'
 import ManagerUserItem from './ManagerUserItem.vue';
 import ModalProfile from '../UtilsComponents/ModalProfile.vue';
+import axios from 'axios';
 </script>
 
 <template lang="">
@@ -22,7 +24,7 @@ export default {
     data(){
         return{
             search: "",
-            Users: [{
+            Users: [/* {
                 id: 1,
                 imgUrl: "",
                 name: "Daniel Simonsen",
@@ -78,22 +80,22 @@ export default {
                 email: "Danho@skp-erp.dk",
                 phone: "37281632",
                 role: "Admin",
-            }],
+            } */],
             showProfileModal: false,
             modalItem: {},
         }
     },
     computed: {
         SearchUser(){
-            const SearchUser = this.Users.filter(item => {
+            const SearchUser = toRaw(this.Users).filter(item => {
                 return (
-                    item.name.toLowerCase().includes(this.search.toLowerCase())
+                    item.fullName.toLowerCase().includes(this.search.toLowerCase())
                 );
             })
             return SearchUser
         }
     },
-    mounted: function(){
+    mounted: async function(){
         this.emitter.on("DeleteUser", (user) => {
             this.Users.splice(this.Users.indexOf(user), 1)
         })
@@ -104,6 +106,12 @@ export default {
         this.emitter.on("UpdateUser", (Item) => {
             this.UpdateUser(Item)
         })
+        let token = localStorage.getItem("token")
+        await axios.get("https://localhost:7203/api/User/getAllUsers", {
+            headers: { Authorization: `Bearer ${token}` }}).then(response => {
+                this.Users = response.data
+                console.log(this.Users)
+            })
     },
     methods: {
         cancel: function(){

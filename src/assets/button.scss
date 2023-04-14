@@ -10,10 +10,10 @@
     }
 }
 .btn-danger{
-    background-color: #d9534f;
+    background-color: var(--danger);
 }
 .btn-confirm{
-    background-color: #5cb85c;
+    background-color: var(--confirm)
 }
 .btn-update{
     background-color: #f0ad4e;

@@ -23,6 +23,11 @@
   /* Loading Circle Colors */
   --dark-loading: hsl(0, 0%, 16%);
   --light-loading: hsl(0, 0%, 100%);
+
+  --danger: hsl(2, 64%, 58%);
+  --danger-opacity: rgb(216, 84, 79, 0.7);
+
+  --confirm: hsl(120, 39%, 54%);
 }
 
 /* semantic color variables for this project */

@@ -26,9 +26,8 @@ export default {
         }
     },
     mounted: function(){
-        this.SelectedItem === toRaw(this.LagerItems[0])
         this.emitter.on("SelectedItem", (userSelectedItem) => {
-            this.SelectedItem = {...userSelectedItem}
+            this.SelectedItem = toRaw(userSelectedItem)
         })
         this.emitter.on("DeleteItem", (id) => {
             const idxObj = this.LagerItems.findIndex(object => {

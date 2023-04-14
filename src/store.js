@@ -10,6 +10,6 @@ export const role = reactive({
 
 export const user = reactive({
     data: {
-        username: ""
+        fullName: ""
     } 
 })

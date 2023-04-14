@@ -4,7 +4,7 @@ import {user} from '../../store.js'
 
 <template lang="">
     <div class="HomeProfile-div">
-        <label>Hej, {{user.data.username}}</label>
+        <label>Hej, {{user.data.fullName}}</label>
         <div class="HomeProfileBtn-container">
             <button class="btn btn-update">Redigér</button>
             <button class="btn btn-confirm">Profil</button>

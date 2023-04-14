@@ -1,4 +1,5 @@
 <script setup lang="jsx">
+import { toRaw } from 'vue';
 import { role } from '../../store.js'
 import Dialog from '../UtilsComponents/Dialog.vue';
 import ModalUpdate from '../UtilsComponents/ModalUpdate.vue';
@@ -13,7 +14,7 @@ defineProps({
         <div class="LagerItemPreviewLabel-div">
             <label>Forhåndsvisning</label>
         </div>
-        <div class="LagerItemPreviewBody-div">
+        <div v-if="Object.keys(toRaw(SelectedItem)).length" class="LagerItemPreviewBody-div">
 <!--             <div>
                 <img class="LagerItemPreview-img" :src="SelectedItem.imgsrc" alt=""/>
             </div> -->
@@ -33,14 +34,14 @@ defineProps({
                 <label for="amount">Mængde på lager:</label>
                 <p>{{SelectedItem.amount}}</p>
             </div>            
-<!--             <div>
+            <div>
                 <label for="amount">Kategori:</label>
                 <p>{{SelectedItem.category.name}}</p>
             </div>
             <div>
                 <label for="amount">Under Kategori:</label>
                 <p>{{SelectedItem.category.subCategory.name}}</p>
-            </div>          -->
+            </div>
             <div v-if="this.producent !== ''">
                 <label for="amount">Producent:</label>
                 <p>{{SelectedItem.producent}}</p>
@@ -55,6 +56,9 @@ defineProps({
                 <button v-if="role.value == 'Admin'" class="btn btn-danger" @click="DeleteItem()">Slet</button>
             </div>
         </div>
+        <div v-else class="LagerItemPreviewBody-div">
+            <p>Vælg en ting</p>
+        </div>
     </div>
     <Dialog v-if="role.value == 'Admin'" :show="showDialog" :cancel="DeleteCancel" :confirm="DeleteConfirm" title="Slet produkt" description="Du skal kun slette dette produkt hvis du er sikker på der ikke er mere på lageret" />
     <ModalUpdate v-if="role.value == 'Admin' && showModalUpdate" :cancel="UpdateCancel" :confirm="UpdateConfirm" :SubmitCreate="SubmitUpdate" :LagerItem="Item"/>
@@ -68,6 +72,9 @@ export default {
             showModalUpdate: false,
             Item: Object
         }
+    },
+    mounted: function(){
+        console.log(toRaw(this.SelectedItem))
     },
     methods: {
         DeleteItem: function(){
