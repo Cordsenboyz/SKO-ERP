@@ -6,13 +6,13 @@ defineProps({
 
 <template lang="">
     <li>
-        <div class="col col-2">{{Item.person}}</div>
-        <div class="col col-2">{{Item.name}}</div>
-        <div class="col col-2">{{Item.desc}}</div>
+        <div class="col col-2">{{Item.fullName}}</div>
+        <div class="col col-2">{{Item.itemName}}</div>
+        <div class="col col-2">{{Item.description}}</div>
         <div class="col col-2">{{Item.amount}}</div>
         <div class="col col-2">{{Item.dateFrom}}</div>
-        <div class="col col-2">{{Item.dateToo}}</div>
-        <button class="btn btn-confirm">Acceptér</button>
+        <div class="col col-2">{{Item.dateTo}}</div>
+        <button class="btn btn-confirm" @click="AcceptBorrow()">Acceptér</button>
         <button class="btn btn-danger" @click="DeclineBorrow()">Afvis</button>
     </li>
 </template>
@@ -22,6 +22,9 @@ export default {
     methods: {
         DeclineBorrow: function(){
             this.emitter.emit("DeclineBorrow", (this.Item))
+        },
+        AcceptBorrow: function(){
+            this.emitter.emit("AcceptBorrow", (this.Item.id))
         }
     }
 }

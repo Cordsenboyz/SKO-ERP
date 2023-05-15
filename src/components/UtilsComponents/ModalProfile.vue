@@ -2,6 +2,7 @@
 import Profile from '../ProfileComponents/Profile.vue'
 import ProfileBorrow from '../ProfileComponents/ProfileBorrow.vue'
 import ProfileReservered from '../ProfileComponents/ProfileReservered.vue'
+import axios from 'axios';
 </script>
 
 <template>
@@ -15,9 +16,9 @@ import ProfileReservered from '../ProfileComponents/ProfileReservered.vue'
                         </ul>
                     </header>
                     <div class="dialogcontent-body">
-                        <Profile v-show="activeTab === 0" :Item="Item"/>
-                        <ProfileBorrow v-show="activeTab === 1"/>
-                        <ProfileReservered v-show="activeTab === 2"/>
+                        <Profile v-show="activeTab === 0" :Item="User"/>
+                        <ProfileBorrow v-show="activeTab === 1" :BorrowList="BorrowList"/>
+                        <ProfileReservered v-show="activeTab === 2" :ReservedBorrowList="ReservedBorrowList"/>
                     </div>
                 </div>
                 <div class="dialog__footer">
@@ -41,10 +42,41 @@ export default {
             },
             {
                 title: "Reserveret"
-            }]
+            }],
+            User: {},
+            BorrowList: {},
+            ReservedBorrowList: {},
         }
     },
-    props: ['cancel', 'confirm', 'UpdateUser', 'Item'],
+    props: ['cancel', 'confirm', 'Item'],
+    mounted: async function(){
+        this.emitter.on("UpdateUser", (user) => {
+        axios.put(`https://localhost:7203/api/User/UpdateUser`, user,
+            {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+        })
+        let token = localStorage.getItem("token");
+        await axios.get(`https://localhost:7203/api/User/GetUserData?email=${this.Item.email}`, 
+                {
+                    headers: { Authorization: `Bearer ${token}` }
+                }).then(userResponse => {
+                    this.User = userResponse.data
+                    axios.get(`https://localhost:7203/Borrow/GetUserBorrowItems?id=${userResponse.data.id}`, 
+                    {
+                        headers: { Authorization: `Bearer ${token}` }
+                    }).then(response => {
+                        this.BorrowList = response.data
+                    })
+                    axios.get(`https://localhost:7203/Borrow/GetUserReservedBorrowItems?id=${userResponse.data.id}`, 
+                    {
+                        headers: { Authorization: `Bearer ${token}` }
+                    }).then(response => {
+                        this.ReservedBorrowList = response.data
+                        console.log(this.ReservedBorrowList)
+                    })
+                })
+    }
 }
 </script>
 

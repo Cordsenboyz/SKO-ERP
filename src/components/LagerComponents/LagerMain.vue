@@ -30,11 +30,9 @@ export default {
             this.SelectedItem = toRaw(userSelectedItem)
         })
         this.emitter.on("DeleteItem", (id) => {
-            const idxObj = this.LagerItems.findIndex(object => {
-                return object.id === id
-            })
-            this.LagerItems.splice(idxObj, 1)
-            this.SelectedItem = this.LagerItems[0]         
+            let token = localStorage.getItem("token")
+            axios.delete(`https://localhost:7203/Item/DeleteItem?id=${id}`, {
+                headers: { Authorization: `Bearer ${token}` }}).then(this.SelectedItem = this.LagerItems[0])
         })
         this.emitter.on("UpdateLager", () => {
             this.GetUpdatedData()
@@ -42,16 +40,23 @@ export default {
     },
     created: async function(){
         let token = localStorage.getItem("token")
-        let response = await axios.get("https://localhost:7203/GetAllItems/GetAllItems", {
+        let response = await axios.get("https://localhost:7203/Item/GetAllItems", {
             headers: { Authorization: `Bearer ${token}` }})
         this.LagerItems = response.data
     },
     methods: {
         GetUpdatedData: async function(){
             let token = localStorage.getItem("token")
-            let response = await axios.get("https://localhost:7203/GetAllItems/GetAllItems", {
-                headers: { Authorization: `Bearer ${token}` }})
-            this.LagerItems = response.data
+            await axios.get("https://localhost:7203/Item/GetAllItems", {
+                headers: { Authorization: `Bearer ${token}` }
+            }).then(response => {
+                    this.LagerItems = response.data
+                    if(Object.keys(toRaw(this.SelectedItem)).length){
+                        let Item = this.LagerItems.find((a) => a.id === this.SelectedItem.id)
+                        let SelectedItemIndex = this.LagerItems.indexOf(Item)
+                        this.SelectedItem = this.LagerItems[SelectedItemIndex];
+                    }
+                })
         }
     }
 }

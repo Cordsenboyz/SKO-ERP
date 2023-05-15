@@ -16,7 +16,7 @@ import axios from 'axios';
             <ManagerUserItem v-for="Item in SearchUser" :key="Item" :Item="Item"/>
         </ul>
     </div>
-    <ModalProfile v-if="role.value === 'Admin' && showProfileModal == true" :cancel="cancel" :confirm="confirm" :UpdateUser="UpdateUser" :Item="modalItem"/>
+    <ModalProfile v-if="role.value === 'Admin' && showProfileModal == true" :cancel="cancel" :confirm="confirm" :Item="modalItem"/>
 </template>
 
 <script lang="jsx">
@@ -24,63 +24,7 @@ export default {
     data(){
         return{
             search: "",
-            Users: [/* {
-                id: 1,
-                imgUrl: "",
-                name: "Daniel Simonsen",
-                email: "Danho@skp-erp.dk",
-                phone: "37281632",
-                role: "Admin",
-            },
-            {
-                id: 2,
-                name: "Lasse Lund Madsen",
-                email: "Danho@skp-erp.dk",
-                phone: "37281632",
-                role: "Admin",
-            },
-            {
-                id: 3,
-                name: "Rune Nielsen",
-                email: "Danho@skp-erp.dk",
-                phone: "37281632",
-                role: "Admin",
-            },
-            {
-                id: 4,
-                name: "Omid",
-                email: "Danho@skp-erp.dk",
-                phone: "37281632",
-                role: "Admin",
-            },
-            {
-                id: 5,
-                name: "Jonas",
-                email: "Danho@skp-erp.dk",
-                phone: "37281632",
-                role: "Admin",
-            },
-            {
-                id: 6,
-                name: "Thomas Vestergaard",
-                email: "Danho@skp-erp.dk",
-                phone: "37281632",
-                role: "Admin",
-            },
-            {
-                id: 7,
-                name: "Daniel Simonsen",
-                email: "Danho@skp-erp.dk",
-                phone: "37281632",
-                role: "Admin",
-            },
-            {
-                id: 8,
-                name: "Daniel Simonsen",
-                email: "Danho@skp-erp.dk",
-                phone: "37281632",
-                role: "Admin",
-            } */],
+            Users: [],
             showProfileModal: false,
             modalItem: {},
         }
@@ -103,14 +47,10 @@ export default {
             this.modalItem = Item
             this.showProfileModal = true
         })
-        this.emitter.on("UpdateUser", (Item) => {
-            this.UpdateUser(Item)
-        })
         let token = localStorage.getItem("token")
         await axios.get("https://localhost:7203/api/User/getAllUsers", {
             headers: { Authorization: `Bearer ${token}` }}).then(response => {
                 this.Users = response.data
-                console.log(this.Users)
             })
     },
     methods: {
@@ -120,13 +60,6 @@ export default {
         confirm: function(){
             this.showProfileModal = false
         },
-        UpdateUser: function(Item){
-            const idxObj = this.Users.findIndex(object => {
-                return object.id === Item.id
-            })
-            this.showProfileModal = false
-            this.Users[idxObj] = Item
-        },
     }
 }
 </script>
@@ -134,7 +67,7 @@ export default {
 <style scoped lang="scss">
     .UserSearch-div{
         display: flex;
-        padding: 1em;
+        padding: 0.5em 1em 0px 1em;
         >button{
             margin-left: auto;
         }

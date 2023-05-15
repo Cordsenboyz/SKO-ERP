@@ -1,12 +1,11 @@
 <script setup lang="jsx">
+import { toRaw } from 'vue';
 import ModalCreate from '../UtilsComponents/ModalCreate.vue';
 import {role} from '../../store.js'
 import { HubConnectionBuilder, LogLevel } from '@aspnet/signalr'
 import axios from 'axios'
-
 defineProps({
     LagerItems: Object,
-    isLoading: Boolean
 })
 
 </script>
@@ -39,7 +38,7 @@ defineProps({
                 </div>
             </div>
             <div class="LagerListItemTable-div">
-                <ul class="responsive-table">
+                <ul v-if="Object.keys(toRaw(LagerItems)).length" class="responsive-table">
                     <li class="table-header">
                         <div class="col col-2 sortable" @click="setProperty('id')">ID</div>
                         <div class="col col-1 sortable" @click="setProperty('name')">Navn</div>
@@ -47,14 +46,17 @@ defineProps({
                         <div class="col col-3 sortable" @click="setProperty('category')">Kategori</div>
                         <div class="col col-4 sortable" @click="setProperty('sub-category')">Under Kategori</div>
                     </li>
-                    <li class="table-row" v-for="(Item, index, key) in PaginationList" :key="key" @click="SelectItem(index)">
+                    <li class="table-row" v-for="(Item, index, key) in PaginationList" :key="Item" @click="SelectItem(index)">
                         <div class="col col-2">{{Item.id}}</div>
                         <div class="col col-1">{{Item.name}}</div>
                         <div class="col col-2">{{Item.amount}}</div>
                         <div class="col col-3">{{Item.category.name}}</div>
-                        <div class="col col-4">{{Item.category.subCategory.name}}</div>
+                        <div class="col col-4">{{Item.subCategory.name}}</div>
                     </li>
                 </ul>
+                <div v-else class="LagerItemListLoading-div">
+                    <div class="loader"></div>
+                </div>
             </div>
         </div>               
         <div class="LagerFooterPagination-div">
@@ -77,7 +79,7 @@ defineProps({
             </ul>
         </div>
     </div>
-    <ModalCreate v-if="role.value == 'Admin'" :show="showModalCreate" :cancel="cancel" :confirm="confirm" :SubmitCreate="SubmitCreate" :Item="Item"/>
+    <ModalCreate v-if="role.value == 'Admin'" :show="showModalCreate" :cancel="cancel" :confirm="confirm" :SubmitCreate="SubmitCreate" :Item="Item" :categories="categories"/>
 </template>
 
 <script lang="jsx">
@@ -91,26 +93,7 @@ export default {
             isAscending: true,
             categoryFilter: "",
             subCategoryFilter: "",
-            categories: [{
-                id: 1,
-                name: "Skærm",
-                subcategories: [{
-                    id: 1,
-                    name: '27"'
-                },
-                {
-                    id: 2,
-                    name: '25"'
-                }]
-            },
-            {
-                id: 2,
-                name: "Kabel",
-                subcategories: [{
-                    id: 3,
-                    name: 'VGA'
-                }]
-            }],
+            categories: [],
             Item: {
                 name: "",
                 description: "",
@@ -139,17 +122,15 @@ export default {
             return this.isAscending ? sorted : sorted.reverse();
         },
         GetSubCategories(){
-            let item = this.categories.find((a) => a.id === this.categoryFilter)
-            console.log(this.categoryFilter)
-            console.log(item)
-            let itemIndex = this.categories.indexOf(item)
-            return this.categories[itemIndex].subcategories
+                let item = toRaw(this.categories).find((a) => a.id === this.categoryFilter)
+                let itemIndex = this.categories.indexOf(item)
+                return this.categories[itemIndex].subCategory
         },
         filtered(){
-            let category = this.categories.find((a) => a.id === this.categoryFilter)
-            let subcategory = category?.subcategories.find((a) => a.id === this.subCategoryFilter)
+            let category = toRaw(this.categories).find((a) => a.id === this.categoryFilter)
+            let subcategory = category?.subCategory.find((a) => a.id === this.subCategoryFilter)
             let filteredList = [...this.LagerItems].filter((item) => {
-                if(category && subcategory) return item.category.id === category.id && item.subcategory.id === subcategory.id
+                if(category && subcategory) return item.category.id === category.id && item.subCategory.id === subcategory.id
                 if(category) return item.category.id === category.id
                 return true;
             })
@@ -172,7 +153,10 @@ export default {
             return this.currentPage === this.numberOfPages;
         },
     },
-    mounted: function(){
+    created: async function(){
+        await this.GetCategories();
+    },
+    mounted: async function(){
         this.connection = new HubConnectionBuilder()
             .withUrl('https://localhost:7203/Lager')
             .build()
@@ -186,6 +170,14 @@ export default {
         this.connection.stop()
     },
     methods:{
+        GetCategories: async function(){
+            let token = localStorage.getItem("token")
+            await axios.get('https://localhost:7203/Category/GetCategory', {
+                headers: { Authorization: `Bearer ${token}` }
+            }).then(response => {
+                this.categories = response.data
+            })
+        },
         CreateItem: function(){
             this.showModalCreate = true;
         },
@@ -200,12 +192,12 @@ export default {
             let dbData = {...this.Item}
             dbData.amount += 1
             let token = localStorage.getItem("token")
-            await axios.post('https://localhost:7203/PostItem/PostItem', dbData, {
+            await axios.post('https://localhost:7203/Item/PostItem', dbData, {
                 headers: { Authorization: `Bearer ${token}` }
             })
         },
         SelectItem: function(index){
-            this.emitter.emit("SelectedItem", (this.sorted[index]))
+            this.emitter.emit("SelectedItem", (this.PaginationList[index]))
         },
         SearchSelectItem: function(id){
             let item = this.sorted.find((a) => a.id === id)
@@ -259,6 +251,27 @@ export default {
 </script>
 
 <style scoped lang="scss">
+    .loader {
+        border: 8px solid var(--light-loading);
+        border-top: 8px solid var(--dark-loading);
+        border-radius: 50%;
+        width: 5rem;
+        height: 5rem;
+        animation: spin 2s linear infinite;
+    }
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    .LagerItemListLoading-div{
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .LagerListItemTable-div{
+        height: 100%;
+    }
     .LagerItemList-div{
         width: calc(80% - 1rem);
         margin-left: 1rem;
@@ -274,6 +287,7 @@ export default {
     }
     .LagerItemList-body{
         padding: 1rem;
+        height: calc(100% - 7rem);
     }
     .LagerItemListlabel-div{
         padding: 1rem;

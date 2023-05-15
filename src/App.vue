@@ -71,7 +71,10 @@ import axios from "axios";
                   user.data.fullName = userResponse.data.fullName
                   this.IsLoggingIn = false;
                 })
-              })
+              }).catch(error => {
+                  this.IsLoggingIn = false;
+                  console.log(error)
+                })
           } else{
             this.IsLoggingIn = false;
             localStorage.clear()
@@ -95,7 +98,7 @@ import axios from "axios";
   }
   .loader {
         border: 16px solid var(--dark-loading);
-        border-top: 16px solid var(--primary-websitebackground);
+        border-top: 16px solid var(--primary-element);
         border-radius: 50%;
         width: 10rem;
         height: 10rem;

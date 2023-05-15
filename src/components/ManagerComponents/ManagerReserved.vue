@@ -1,4 +1,5 @@
 <script setup lang="jsx">
+import axios from 'axios';
 import ManagerReservedItem from './ManagerReservedItem.vue';
 </script>
 
@@ -8,9 +9,12 @@ import ManagerReservedItem from './ManagerReservedItem.vue';
             <label>Reserveret Lån</label>
         </div>
         <div class="ReservedBody-div">
-            <ul>
+            <ul v-if="!isLoading">
                 <ManagerReservedItem v-for="Item in ReservedItemList" :key="Item" :Item="Item"/>
             </ul>
+            <div v-else class="ManagerBorrowingLoading-div">
+                <div class="loader"></div>
+            </div>
         </div>
     </div>
 </template>
@@ -19,85 +23,23 @@ import ManagerReservedItem from './ManagerReservedItem.vue';
 export default {
     data(){
         return{
-            TempData: [{
-                id: 1,
-                name: "Bærbar",
-                amount: 10,
-                dateFrom: "23/03/2023 08:00",
-                dateToo: "30/03/2023 12:00",
-                desc: "Brobygning",
-                person: "Rune"
-            },
-            {
-                id: 1,
-                name: "Bærbar",
-                amount: 10,
-                dateFrom: "23/03/2023 08:00",
-                dateToo: "30/03/2023 12:00",
-                desc: "Brobygning",
-                person: "Rune"
-            },
-            {
-                id: 1,
-                name: "Bærbar",
-                amount: 10,
-                dateFrom: "23/03/2023 08:00",
-                dateToo: "30/03/2023 12:00",
-                desc: "Brobygning",
-                person: "Rune"
-            },
-            {
-                id: 1,
-                name: "Bærbar",
-                amount: 10,
-                dateFrom: "23/03/2023 08:00",
-                dateToo: "30/03/2023 12:00",
-                desc: "Brobygning",
-                person: "Rune"
-            },
-            {
-                id: 1,
-                name: "Bærbar",
-                amount: 10,
-                dateFrom: "23/03/2023 08:00",
-                dateToo: "30/03/2023 12:00",
-                desc: "Brobygning",
-                person: "Rune"
-            },
-            {
-                id: 1,
-                name: "Bærbar",
-                amount: 10,
-                dateFrom: "23/03/2023 08:00",
-                dateToo: "30/03/2023 12:00",
-                desc: "Brobygning",
-                person: "Rune"
-            },
-            {
-                id: 1,
-                name: "Bærbar",
-                amount: 10,
-                dateFrom: "23/03/2023 08:00",
-                dateToo: "30/03/2023 12:00",
-                desc: "Brobygning",
-                person: "Rune"
-            },
-            {
-                id: 1,
-                name: "Bærbar",
-                amount: 10,
-                dateFrom: "23/03/2023 08:00",
-                dateToo: "30/03/2023 12:00",
-                desc: "Brobygning",
-                person: "Rune"
-            }]
+            APIReservedBorrowItems: [],
+            isLoading: true
         }
     },
     computed: {
         ReservedItemList(){
-            const ReservedItemList = this.TempData
+            const ReservedItemList = this.APIReservedBorrowItems
             return ReservedItemList
         }
+    },
+    mounted: async function(){
+        let token = localStorage.getItem("token")
+        await axios.get("https://localhost:7203/Borrow/GetAllReservedBorrowItems", {
+            headers: { Authorization: `Bearer ${token}` }}).then(response => {
+                this.APIReservedBorrowItems = response.data
+                this.isLoading = false;
+        })
     }
 }
 </script>
@@ -127,7 +69,27 @@ export default {
         }
         .ReservedBody-div{
             padding: 1em;
+            width: 100%;
             height: calc(100% - 3.5rem);
             overflow-y: overlay;
+        }
+        .ManagerBorrowingLoading-div{
+            height: 100%;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .loader {
+        border: 8px solid var(--light-loading);
+        border-top: 8px solid var(--dark-loading);
+        border-radius: 50%;
+        width: 5rem;
+        height: 5rem;
+        animation: spin 2s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 </style>

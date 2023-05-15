@@ -3,6 +3,8 @@ import { toRaw } from 'vue';
 import { role } from '../../store.js'
 import Dialog from '../UtilsComponents/Dialog.vue';
 import ModalUpdate from '../UtilsComponents/ModalUpdate.vue';
+import ModalBorrow from '../UtilsComponents/ModalBorrow.vue';
+import axios from 'axios';
 defineProps({
     SelectedItem: Object
 })
@@ -15,9 +17,9 @@ defineProps({
             <label>Forhåndsvisning</label>
         </div>
         <div v-if="Object.keys(toRaw(SelectedItem)).length" class="LagerItemPreviewBody-div">
-<!--             <div>
-                <img class="LagerItemPreview-img" :src="SelectedItem.imgsrc" alt=""/>
-            </div> -->
+            <div>
+                <img class="LagerItemPreview-img" :src="SelectedItem.imgsrc || 'src/assets/no_image.webp'" alt=""/>
+            </div>
             <div>
                 <label for="id">Serienummer:</label>
                 <p>{{SelectedItem.id}}</p>
@@ -40,7 +42,7 @@ defineProps({
             </div>
             <div>
                 <label for="amount">Under Kategori:</label>
-                <p>{{SelectedItem.category.subCategory.name}}</p>
+                <p>{{SelectedItem.subCategory.name}}</p>
             </div>
             <div v-if="this.producent !== ''">
                 <label for="amount">Producent:</label>
@@ -51,8 +53,8 @@ defineProps({
                 <p>{{SelectedItem.barcode}}</p>
             </div>  
             <div class="button-container">
-                <button class="btn btn-confirm">Hent</button>              
-                <button v-if="role.value == 'Admin'" class="btn btn-update" @click="UpdateItem()">Opdatér</button>
+                <button class="btn btn-confirm" @click="BorrowItemEvent()">Hent</button>              
+                <button v-if="role.value == 'Admin'" class="btn btn-update" @click="UpdateItemEvent()">Opdatér</button>
                 <button v-if="role.value == 'Admin'" class="btn btn-danger" @click="DeleteItem()">Slet</button>
             </div>
         </div>
@@ -61,7 +63,8 @@ defineProps({
         </div>
     </div>
     <Dialog v-if="role.value == 'Admin'" :show="showDialog" :cancel="DeleteCancel" :confirm="DeleteConfirm" title="Slet produkt" description="Du skal kun slette dette produkt hvis du er sikker på der ikke er mere på lageret" />
-    <ModalUpdate v-if="role.value == 'Admin' && showModalUpdate" :cancel="UpdateCancel" :confirm="UpdateConfirm" :SubmitCreate="SubmitUpdate" :LagerItem="Item"/>
+    <ModalUpdate v-if="role.value == 'Admin' && showModalUpdate" :cancel="UpdateCancel" :SubmitUpdate="SubmitUpdate" :LagerItem="UpdateItem"/>
+    <ModalBorrow v-if="showModalBorrow" :cancel="BorrowCancel" :SubmitBorrow="SubmitBorrow" :BorrowItem="BorrowItem" />
 </template>
 
 <script lang="jsx">
@@ -70,11 +73,18 @@ export default {
         return{
             showDialog: false,
             showModalUpdate: false,
-            Item: Object
+            showModalBorrow: false,
+            UpdateItem: Object,
+            BorrowItem: {
+                Id: 0,
+                amount: 0,
+                description: "",
+                dateFrom: Date,
+                dateTo: Date,
+            }
         }
     },
     mounted: function(){
-        console.log(toRaw(this.SelectedItem))
     },
     methods: {
         DeleteItem: function(){
@@ -87,12 +97,18 @@ export default {
             this.emitter.emit("DeleteItem", this.SelectedItem.id)
             this.showDialog = false;
         },
-        SubmitUpdate: function(e){
+        SubmitUpdate: async function(e){
             e.preventDefault()
             this.showModalUpdate = false;
+            let dbData = toRaw(this.UpdateItem)
+            let token = localStorage.getItem("token")
+            await axios.put('https://localhost:7203/Item/UpdateItem', toRaw(dbData), {
+                headers: { Authorization: `Bearer ${token}` }
+            })
         },
-        UpdateItem: function(){
-            this.Item = {...this.SelectedItem}
+        UpdateItemEvent: function(){
+            let UpdateJsonObject = JSON.stringify(this.SelectedItem)
+            this.UpdateItem = JSON.parse(UpdateJsonObject)
             this.showModalUpdate = true;
         },
         UpdateCancel: function(){
@@ -101,6 +117,22 @@ export default {
         UpdateConfirm: function(){
             this.showModalUpdate = false;
         },
+        BorrowItemEvent: function(){
+            this.BorrowItem.Id = this.SelectedItem.id
+            this.showModalBorrow = true;
+        },
+        BorrowCancel: function(){
+            this.showModalBorrow = false;
+        },
+        SubmitBorrow: async function(e){
+            e.preventDefault();
+            this.showModalBorrow = false;
+            let token = localStorage.getItem("token")
+            let dbData = toRaw(this.BorrowItem)
+            await axios.post('https://localhost:7203/Borrow/RequestBorrow', toRaw(dbData), {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+        }
     },
 }
 </script>
@@ -143,7 +175,7 @@ export default {
     }
     .LagerItemPreview-img{
         width: 100%;
-        max-height: 20ch;
+        max-height: 21.5ch;
     }
     .button-container{
         display: grid;

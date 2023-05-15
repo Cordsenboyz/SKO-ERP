@@ -12,7 +12,7 @@ defineProps({
         <label>Email:</label>
         <p>{{Item.email}}</p>
         <label>Telefon Nummer:</label>
-        <p>+45 {{Item.phone}}</p>
+        <p>+45 {{Item.phoneNumber}}</p>
         <label>Role:</label>
         <p>{{Item.role}}</p>
         <button class="btn btn-update bottom" @click="EditProfile()">Redigér</button>
@@ -21,11 +21,11 @@ defineProps({
         <form class="Profile-body" @submit="UpdateUser($event)">
             <img :src="Item.imgUrl || 'src/assets/user-solid.svg'" alt="Personens profil billede"/>
             <label>Navn: {{Item.fullName}}</label>
-            <input v-model="editItem.name" />
+            <input v-model="editItem.fullName" />
             <label>Email: {{Item.email}}</label>
             <input v-model="editItem.email" />
             <label>Telefon Nummer: {{Item.phone}}</label>
-            <input v-model="editItem.phone" />
+            <input v-model="editItem.phoneNumber" />
             <label>Role: {{Item.role}}</label>
             <input v-model="editItem.role" />
             <div class="btn-container bottom">
@@ -64,6 +64,7 @@ export default {
         },
         UpdateUser: function(event){
             event.preventDefault()
+            this.editItem.oldEmail = this.Item.email
             this.emitter.emit("UpdateUser", (this.editItem))
             this.profileEditMode = false
         }

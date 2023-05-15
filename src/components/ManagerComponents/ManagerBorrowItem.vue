@@ -6,12 +6,12 @@ defineProps({
 
 <template lang="">
     <li :class="isDueSoon ? 'dueSoon' : 'Test'">
-        <div class="col col-2 item"><label>Person:</label><p>{{Item.person}}</p></div>
-        <div class="col col-2 item"><label>Navn:</label><p>{{Item.name}}</p></div>
-        <div class="col col-2 item"><label>Beskrivelse:</label><p>{{Item.desc}}</p></div>
+        <div class="col col-2 item"><label>Person:</label><p>{{Item.fullName}}</p></div>
+        <div class="col col-2 item"><label>Navn:</label><p>{{Item.itemName}}</p></div>
+        <div class="col col-2 item"><label>Beskrivelse:</label><p>{{Item.description}}</p></div>
         <div class="col col-2 item"><label>Mængde:</label><p>{{Item.amount}}</p></div>
         <div class="col col-2 item"><label>Fra:</label><p>{{Item.dateFrom.toLocaleString('en-GB', { timeZone: 'CET' })}}</p></div>
-        <div v-if="Item.dateToo" class="col col-2 item"><label>Til:</label><p>{{Item.dateToo.toLocaleString('en-GB', { timeZone: 'CET' })}}</p></div>
+        <div class="col col-2 item"><label>Til:</label><p>{{Item.dateTo.toLocaleString('en-GB', { timeZone: 'CET' })}}</p></div>
     </li>
 </template>
 
@@ -23,9 +23,9 @@ export default {
         }
     },
     computed:{
-        isDueSoon(){
-            return Date.now() > this.Item.dateToo.getTime() 
-        }
+/*         isDueSoon(){
+            return Date.now() > this.Item.dateTo.getTime() 
+        } */
     }
 }
 </script>

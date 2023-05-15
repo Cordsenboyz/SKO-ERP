@@ -5,27 +5,23 @@
     <div class="overlay">
         <div class="dialog-wrapper">
             <div class="dialog" @click.stop="">
-                <form class="form-group" @submit="SubmitUpdate($event)">
+                <form class="form-group" @submit="SubmitBorrow($event)">
                     <div class="dialog__content">
-                        <h2 class="form-title">Opdatér Produkt</h2>
+                        <h2 class="form-title">Lån Produkt</h2>
                     </div>
                     <div class="form-input-group">
-                        <label class="form-input-label">Navn</label>
-                        <input v-model="LagerItem.name" class="form-control" placeholder="Navn">
                         <label class="form-input-label">Beskrivelse</label>
-                        <input v-model="LagerItem.description" class="form-control" placeholder="Beskrivelse">                        
-                        <label class="form-input-label">Amount</label>
-                        <input v-model="LagerItem.amount" class="form-control" placeholder="Beskrivelse">
-                        <label class="form-input-label">Kategori</label>
-                        <input v-model="LagerItem.category.name" class="form-control" placeholder="Kategori">
-                        <label class="form-input-label">Under Kategori</label>
-                        <input v-model="LagerItem.subCategory.name" class="form-control" placeholder="Under Kategori">
-                        <label class="form-input-label">Producent</label>
-                        <input v-model="LagerItem.producent" class="form-control" placeholder="Producent">
+                        <input v-model="BorrowItem.description" class="form-control" placeholder="Navn">
+                        <label class="form-input-label">Mængde</label>
+                        <input v-model="BorrowItem.amount" class="form-control" placeholder="Beskrivelse">                        
+                        <label class="form-input-label">Fra</label>
+                        <input v-model="BorrowItem.dateFrom" type="date" class="form-control" placeholder="Beskrivelse">
+                        <label class="form-input-label">Til</label>
+                        <input v-model="BorrowItem.dateTo" type="date" class="form-control" placeholder="Kategori">
                     </div>
                     <div class="dialog__footer">
                         <button @click="cancel" type="reset" class="btn btn-cancel">Fortryd</button>
-                        <button type="submit" class="btn btn-update">Opdatér</button>
+                        <button type="submit" class="btn btn-confirm">Lån</button>
                     </div>
                 </form>
             </div>
@@ -35,15 +31,7 @@
   
 <script lang="jsx">
 export default {
-    data(){
-        return{
-
-        }
-    },
-    props: ['cancel', 'SubmitUpdate', 'LagerItem'],
-    methods: {
-
-    }
+    props: ['cancel', 'SubmitBorrow', 'BorrowItem'],
 }
 </script>
 

@@ -6,11 +6,11 @@ defineProps({
 
 <template lang="">
     <li :class="isDueSoon ? 'dueSoon' : 'Test'">
-        <div class="col col-2">Navn: {{Item.name}}</div>
-        <div class="col col-2">Beskrivelse: {{Item.desc}}</div>
+        <div class="col col-2">Navn: {{Item.item.name}}</div>
+        <div class="col col-2">Beskrivelse: {{Item.description}}</div>
         <div class="col col-3">Mændge: {{Item.amount}}</div>
         <div class="col col-3">Fra: {{Item.dateFrom.toLocaleString('en-GB', { timeZone: 'CET' })}}</div>
-        <div v-if="Item.dateToo" class="col col-3">Til: {{Item.dateToo.toLocaleString('en-GB', { timeZone: 'CET' })}}</div>
+        <div class="col col-3">Til: {{Item.dateTo.toLocaleString('en-GB', { timeZone: 'CET' })}}</div>
     </li>
 </template>
 
@@ -22,9 +22,9 @@ export default {
         }
     },
     computed:{
-        isDueSoon(){
-            return Date.now() < this.Item.dateToo.getTime() ? true : false
-        }
+/*         isDueSoon(){
+            return Date.now() < this.Item.dateTo.getTime() ? true : false
+        } */
     }
 }
 </script>

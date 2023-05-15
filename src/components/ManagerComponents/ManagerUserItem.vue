@@ -8,9 +8,9 @@ defineProps({
 
 <template lang="">
     <li>
-        <div class="col col-2">{{Item.fullName}}</div>
-        <div class="col col-2">{{Item.email}}</div>
-        <div class="col col-2">{{Item.role}}</div>
+        <div class="col col-2">Navn: {{Item.fullName}}</div>
+        <div class="col col-2">Email: {{Item.email}}</div>
+        <div class="col col-2">Role: {{Item.role}}</div>
         <button class="btn btn-confirm" @click="ShowModal()">Vis Profil</button>
         <button class="btn btn-danger" @click="DeleteUser()">Slet</button>
     </li>

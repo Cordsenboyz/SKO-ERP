@@ -1,4 +1,5 @@
 <script setup lang="jsx">
+import axios from 'axios';
 import HomeBorrowingItem from './HomeBorrowingItem.vue';
 </script>
 
@@ -23,21 +24,23 @@ import HomeBorrowingItem from './HomeBorrowingItem.vue';
 export default {
     data(){
         return{
-            isLoading: false,
-            TempData: [{
-                id: 1,
-                name: "Skærm",
-                amount: 2,
-                desc: "Mangler Skærm",
-                dateFrom: new Date("2023-03-21T08:00:00"),
-                dateToo: new Date("2024-03-21T08:00:00"),
-                dueSoon: undefined,
-            }]
+            isLoading: true,
+            BorrowData: []
         }
+    },
+    mounted: async function(){
+        let token = localStorage.getItem("token")
+        await axios.get("https://localhost:7203/Borrow/GetBorrowItems", {
+                headers: { Authorization: `Bearer ${token}` }
+            }).then(response => {
+                this.isLoading = false
+                console.log(response.data)
+                this.BorrowData = response.data
+            })
     },
     computed: {
         borrowList(){
-            const borrowList = this.TempData
+            const borrowList = this.BorrowData
             return borrowList
         }
     }

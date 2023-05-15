@@ -6,15 +6,15 @@ defineProps({
 
 <template lang="">
     <li>
-        <div class="col col-2">Person: {{Item.person}}</div>
-        <div class="col col-2">Beskrivelse: {{Item.desc}}</div>
+        <div class="col col-2">Person: {{Item.fullName}}</div>
+        <div class="col col-2">Beskrivelse: {{Item.description}}</div>
         <div class="col col-2 item">
             <p>{{Item.amount}}</p>
-            <p>{{Item.name}}</p>
+            <p>{{Item.itemName}}</p>
         </div>
         <div class="col col-2 item">
             <p>{{Item.dateFrom}}</p>
-            <p v-if="Item.dateToo" >{{Item.dateToo}}</p>
+            <p v-if="Item.dateTo" >{{Item.dateTo}}</p>
         </div>
     </li>
 </template>

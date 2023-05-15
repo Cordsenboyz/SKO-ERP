@@ -1,3 +1,7 @@
+<script setup lang="jsx">
+import axios from 'axios';
+</script>
+
 <template lang="">
     <div class="HomeUpcoming-div">
         <div class="HomeUpcomingLoaded-div" v-if="!isLoading">
@@ -6,13 +10,12 @@
             </div>
             <div class="HomeUpcomingBody-div">
                 <ul class="responsive-table">
-                    <li v-for="(Item, index) in TempData" :key="Item">
-                        <div class="col col-2">{{Item.desc}}</div>
-                        <div class="col col-1">{{Item.person}}</div>
-                        <div class="col col-2">{{Item.name}}</div>
-                        <div class="col col-3">{{Item.amount}}</div>
-                        <div class="col col-3">{{Item.dateFrom}}</div>
-                        <div class="col col-3">{{Item.dateToo}}</div>
+                    <li v-for="(Item, index) in RequestData" :key="Item">
+                        <div class="col col-3">{{Item.item.name}}</div>
+                        <div class="col col-1">{{Item.description}}</div>
+                        <div class="col col-1">{{Item.amount}}</div>
+                        <div class="col col-3">{{Item.dateFrom.toLocaleString('en-GB', { timeZone: 'CET' })}}</div>
+                        <div class="col col-3">{{Item.dateTo.toLocaleString('en-GB', { timeZone: 'CET' })}}</div>
                     </li>
                 </ul>
             </div>
@@ -22,111 +25,22 @@
         </div>
     </div>
 </template>
-<script>
+<script lang="jsx">
 export default {
     data(){
         return{
-            isLoading: false,
-            TempData: [{
-                id: 1,
-                name: "Bærbar",
-                amount: 10,
-                dateFrom: "23/03/2023 08:00",
-                dateToo: "30/03/2023 12:00",
-                desc: "Brobygning",
-                person: "Rune"
-            },
-            {
-                id: 1,
-                name: "Bærbar",
-                amount: 10,
-                dateFrom: "23/03/2023 08:00",
-                dateToo: "30/03/2023 12:00",
-                desc: "Brobygning",
-                person: "Rune"
-            },
-            {
-                id: 1,
-                name: "Bærbar",
-                amount: 10,
-                dateFrom: "23/03/2023 08:00",
-                dateToo: "30/03/2023 12:00",
-                desc: "Brobygning",
-                person: "Rune"
-            },
-            {
-                id: 1,
-                name: "Bærbar",
-                amount: 10,
-                dateFrom: "23/03/2023 08:00",
-                dateToo: "30/03/2023 12:00",
-                desc: "Brobygning",
-                person: "Rune"
-            },
-            {
-                id: 1,
-                name: "Bærbar",
-                amount: 10,
-                dateFrom: "23/03/2023 08:00",
-                dateToo: "30/03/2023 12:00",
-                desc: "Brobygning",
-                person: "Rune"
-            },
-            {
-                id: 1,
-                name: "Bærbar",
-                amount: 10,
-                dateFrom: "23/03/2023 08:00",
-                dateToo: "30/03/2023 12:00",
-                desc: "Brobygning",
-                person: "Rune"
-            },
-            {
-                id: 1,
-                name: "Bærbar",
-                amount: 10,
-                dateFrom: "23/03/2023 08:00",
-                dateToo: "30/03/2023 12:00",
-                desc: "Brobygning",
-                person: "Rune"
-            },
-            {
-                id: 1,
-                name: "Bærbar",
-                amount: 10,
-                dateFrom: "23/03/2023 08:00",
-                dateToo: "30/03/2023 12:00",
-                desc: "Brobygning",
-                person: "Rune"
-            },
-            {
-                id: 1,
-                name: "Bærbar",
-                amount: 10,
-                dateFrom: "23/03/2023 08:00",
-                dateToo: "30/03/2023 12:00",
-                desc: "Brobygning",
-                person: "Rune"
-            },
-            {
-                id: 1,
-                name: "Bærbar",
-                amount: 10,
-                dateFrom: "23/03/2023 08:00",
-                dateToo: "30/03/2023 12:00",
-                desc: "Brobygning",
-                person: "Rune"
-            },
-            {
-                id: 1,
-                name: "Bærbar",
-                amount: 10,
-                dateFrom: "23/03/2023 08:00",
-                dateToo: "30/03/2023 12:00",
-                desc: "Brobygning",
-                person: "Rune"
-            }]
+            isLoading: true,
+            RequestData: []
         }
+    },
+    mounted: async function(){
+        let token = localStorage.getItem("token")
+        await axios.get("https://localhost:7203/Borrow/GetReservedBorrowItems", {
+                headers: { Authorization: `Bearer ${token}` }
+            }).then(response => {
+                this.isLoading = false
+                this.RequestData = response.data
+            })
     }
 }
 </script>

@@ -1,28 +1,27 @@
 <script setup lang="jsx">
-
+defineProps({
+    ReservedBorrowList: Object
+})
 </script>
 
 <template lang="">
-    <div v-if="!isLoading" class="Reservered-body">
+    <div class="Reservered-body">
         <ul>
             <li class="table-header">
                 <div class="col col-2">Navn</div>
-                <div class="col col-2">Navn</div>
-                <div class="col col-2">Navn</div>
-                <div class="col col-2">Navn</div>
-                <div class="col col-2">Navn</div>
+                <div class="col col-2">Beskrivelse</div>
+                <div class="col col-2">Mængde</div>
+                <div class="col col-2">Fra</div>
+                <div class="col col-2">Tl</div>
             </li>
             <li v-for="(Item, index) in ReservedList" :key="item">
-                <div class="col col-2 item">{{Item.name}}</div>
-                <div class="col col-2 item">{{Item.name}}</div>
-                <div class="col col-2 item">{{Item.name}}</div>
-                <div class="col col-2 item">{{Item.name}}</div>
-                <div class="col col-2 item">{{Item.name}}</div>
+                <div class="col col-2 item">{{Item.item.name}}</div>
+                <div class="col col-2 item">{{Item.description}}</div>
+                <div class="col col-2 item">{{Item.amount}}</div>
+                <div class="col col-2 item">{{Item.dateFrom}}</div>
+                <div class="col col-2 item">{{Item.dateTo}}</div>
             </li>
         </ul>
-    </div>
-    <div v-else class="ReserveredLoading-div">
-            <div class="loader"></div>
     </div>
 </template>
 
@@ -30,30 +29,11 @@
 export default {
     data(){
         return{
-            isLoading: true,
-            ReserveList: []
-        }
-    },
-    mounted: function(){
-        this.ReserveList = this.GetPersonReserveredData()
-    },
-    methods: {
-        GetPersonReserveredData: function(){
-            let data = [{
-                id: 1,
-                name: "kage"
-            },
-            {
-                id: 1,
-                name: "Juice"
-            }]
-            this.isLoading = false
-            return data
         }
     },
     computed: {
         ReservedList(){
-            let ReservedList = this.ReserveList
+            let ReservedList = this.ReservedBorrowList
             return ReservedList
         }
     }
