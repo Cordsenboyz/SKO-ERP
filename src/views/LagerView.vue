@@ -3,9 +3,7 @@ import LagerMain from "../components/LagerComponents/LagerMain.vue"
 </script>
 
 <template lang="">
-    <div>
-        <LagerMain />
-    </div>
+    <LagerMain />
 </template>
 
 <script lang="jsx">

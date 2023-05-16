@@ -8,7 +8,6 @@ import axios from 'axios';
 defineProps({
     SelectedItem: Object
 })
-
 </script>
 
 <template lang="">
@@ -84,8 +83,6 @@ export default {
             }
         }
     },
-    mounted: function(){
-    },
     methods: {
         DeleteItem: function(){
             this.showDialog = true;
@@ -102,7 +99,8 @@ export default {
             this.showModalUpdate = false;
             let dbData = toRaw(this.UpdateItem)
             let token = localStorage.getItem("token")
-            await axios.put('https://localhost:7203/Item/UpdateItem', toRaw(dbData), {
+
+            await axios.put('https://localhost:7203/api/Item/UpdateItem', toRaw(dbData), {
                 headers: { Authorization: `Bearer ${token}` }
             })
         },
@@ -127,9 +125,10 @@ export default {
         SubmitBorrow: async function(e){
             e.preventDefault();
             this.showModalBorrow = false;
-            let token = localStorage.getItem("token")
             let dbData = toRaw(this.BorrowItem)
-            await axios.post('https://localhost:7203/Borrow/RequestBorrow', toRaw(dbData), {
+            let token = localStorage.getItem("token")
+
+            await axios.post('https://localhost:7203/api/Borrow/RequestBorrow', toRaw(dbData), {
                 headers: { Authorization: `Bearer ${token}` }
             })
         }

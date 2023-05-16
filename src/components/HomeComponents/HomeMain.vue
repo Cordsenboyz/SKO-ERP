@@ -39,8 +39,6 @@ export default {
     },
     unmounted: function(){
         this.connection.stop()
-    },
-    methods: {
     }
 }
 </script>

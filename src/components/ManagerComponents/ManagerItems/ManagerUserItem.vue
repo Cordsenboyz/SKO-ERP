@@ -1,6 +1,6 @@
 <script setup lang="jsx">
-import ModalProfile from '../UtilsComponents/ModalProfile.vue';
-import {role} from '../../store.js'
+import ModalProfile from '../../UtilsComponents/ModalProfile.vue';
+import {role} from '../../../store.js'
 defineProps({
     Item: Object
 })
@@ -18,11 +18,6 @@ defineProps({
 
 <script lang="jsx">
 export default {
-    data(){
-        return{
-            showModal: false
-        }
-    },
     methods:{
         ShowModal: function(){
             this.emitter.emit("ShowProfileModal", (this.Item))
@@ -47,9 +42,6 @@ export default {
         box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.1);
         color: var(--light-textcolor);
         gap: 0.5em;
-    }
-    .col-1 {
-        flex-basis: 30%;
     }
     .col-2 {
         flex-basis: 30%;

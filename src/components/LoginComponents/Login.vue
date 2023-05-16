@@ -2,6 +2,7 @@
 import axios from "axios";
 import {store, role, user} from "../../store.js"
 import {AxiosError} from 'axios';
+import Loading from "../UtilsComponents/Loading.vue";
 </script>
 
 <template lang="">
@@ -13,10 +14,12 @@ import {AxiosError} from 'axios';
                     <p>{{error}}</p>
                     <button class="errorclose-btn right" type="button" @click="this.errors = []">✖</button>
                 </li>
+
                 <label class="form-input-label">Email</label>
                 <input v-model="Email" type="Username" class="form-control" placeholder="Email" required>
                 <label class="form-input-label">Password</label>
                 <input v-model="Password" type="Password" class="form-control" placeholder="Password" required>
+
                 <div class="rememberme-div">
                     <input v-model="RememberMe" type="checkbox" placeholder="Husk Mig?">
                     <Label>Husk Mig?</Label>
@@ -27,12 +30,10 @@ import {AxiosError} from 'axios';
                     <button type="button" class="btn btn-register login" @click="registerMode = true">Registér</button>
                 </div>
             </div>
-            <div v-else class="LoginLoading-div">
-                <div class="loader"></div>
-            </div>
+            <Loading v-else />
         </form>
     </div>
-    <div v-else>
+    <div v-else class="form-div">
         <form class="form-group" @submit="Register($event)">
             <label class="form-input-label">Email</label>
             <input v-model="registerEmail" type="Username" class="form-control" placeholder="Email" required>
@@ -54,12 +55,14 @@ export default {
         return{
             Email: "",
             Password: "",
+
             registerEmail: "",
             registerFullName: "",
             registerPassword: "",
+            registerMode: false,
+
             isLoggingIn: false,
             RememberMe: false,
-            registerMode: false,
             errors: []
         }
     },
@@ -68,35 +71,37 @@ export default {
             event.preventDefault();
             this.errors = []
             this.isLoggingIn = true;
+
             await axios.post('https://localhost:7203/api/User/Login', {
                 email: this.Email,
                 password: this.Password
-            }).then(async function(response){
-                    console.log(response)
-                    if(response.data.succeeded){
-                        localStorage.setItem("token", response.data.token.token)
-                        localStorage.setItem("expires", response.data.token.expiration)
-                        if(this.RememberMe === true){
-                            localStorage.setItem("refreshToken", response.data.token.refreshToken)
-                        }
-                        console.log(new Date(response.data.token.expiration).getTime())
-                        await axios.get(`https://localhost:7203/api/User/getUser`, 
-                            {
-                                headers: { Authorization: `Bearer ${response.data.token.token}` }
-                            }).then(function(response){
-                                console.log(response)
-                                role.value = response.data.role
-                                user.data.fullName = response.data.fullName
-                                store.IsAuthenticated = true
-                                this.isLoggingIn = false;
-                            })
+            })
+            .then(async response => {
+                if(response.data.succeeded){
+                    localStorage.setItem("token", response.data.token.token)
+                    localStorage.setItem("expires", response.data.token.expiration)
+
+                    if(this.RememberMe === true){
+                        localStorage.setItem("refreshToken", response.data.token.refreshToken)
                     }
-            }.bind(this)).catch(error =>{
-                console.log(error)
+
+                    await axios.get(`https://localhost:7203/api/User/getUser`, 
+                    {
+                        headers: { Authorization: `Bearer ${response.data.token.token}` }
+                    })
+                    .then(async response => {
+                        role.value = response.data.role
+                        user.data.fullName = response.data.fullName
+                        store.IsAuthenticated = true
+                        this.isLoggingIn = false;
+                    })
+                }
+            })
+            .catch(error => {
+                this.isLoggingIn = false;
                 if(error?.code === AxiosError.ERR_NETWORK){
                     this.errors.push("Kunne ikke forbinde til serveren")
                 }
-                this.isLoggingIn = false;
                 if(error.response.status == 400){
                     this.errors.push("Vi kunne ikke verificere dine login oplysninger")
                 } else {
@@ -110,11 +115,11 @@ export default {
                 email: this.registerEmail,
                 fullName: this.registerFullName,
                 password: this.registerPassword
-            }).then(response => {
-                console.log(response)
+            })
+            .then(response => {
                 this.registerMode = false
-            }).catch(error => {
-                console.log(error)
+            })
+            .catch(error => {
             })
         }
     }
@@ -183,13 +188,6 @@ export default {
         overflow: hidden;
 
     }
-    .LoginLoading-div{
-        width: 100%;
-        min-height: 20rem;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
     .rememberme-div{
         display: flex;
         gap: 0.5em;
@@ -211,17 +209,5 @@ export default {
             cursor: pointer;
             color: var(--dark-textcolor)
         }
-    }
-    .loader {
-        border: 8px solid var(--light-loading);
-        border-top: 8px solid var(--dark-loading);
-        border-radius: 50%;
-        width: 6rem;
-        height: 6rem;
-        animation: spin 2s linear infinite;
-    }
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
     }
 </style>

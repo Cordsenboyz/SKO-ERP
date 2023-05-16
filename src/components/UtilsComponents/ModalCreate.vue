@@ -74,7 +74,6 @@ export default {
     },
     methods: {
         SearchCategorySelectItem: function(item){
-            console.log("Category")
             this.Item.category = item.name
             this.subCategories = item.subCategory
             this.isCategorySearching = false

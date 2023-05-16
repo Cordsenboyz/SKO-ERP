@@ -1,4 +1,6 @@
 <script setup lang="jsx">
+import ProfileReservedItem from './ProfileItems/ProfileReservedItem.vue';
+
 defineProps({
     ReservedBorrowList: Object
 })
@@ -14,51 +16,17 @@ defineProps({
                 <div class="col col-2">Fra</div>
                 <div class="col col-2">Tl</div>
             </li>
-            <li v-for="(Item, index) in ReservedList" :key="item">
-                <div class="col col-2 item">{{Item.item.name}}</div>
-                <div class="col col-2 item">{{Item.description}}</div>
-                <div class="col col-2 item">{{Item.amount}}</div>
-                <div class="col col-2 item">{{Item.dateFrom}}</div>
-                <div class="col col-2 item">{{Item.dateTo}}</div>
-            </li>
+            <ProfileReservedItem v-for="(Item, index) in ReservedBorrowList" :key="item" :Item="Item"/>
         </ul>
     </div>
 </template>
 
 <script lang="jsx">
 export default {
-    data(){
-        return{
-        }
-    },
-    computed: {
-        ReservedList(){
-            let ReservedList = this.ReservedBorrowList
-            return ReservedList
-        }
-    }
 }
 </script>
 
 <style scoped lang="scss">
-    .ProfileLoading-div{
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    .loader {
-        border: 8px solid var(--light-loading);
-        border-top: 8px solid var(--dark-loading);
-        border-radius: 50%;
-        width: 5rem;
-        height: 5rem;
-        animation: spin 2s linear infinite;
-    }
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
     li {
         border-radius: 3px;
         padding: 0.5em;

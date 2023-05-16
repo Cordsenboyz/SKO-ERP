@@ -1,4 +1,5 @@
 <script setup lang="jsx">
+import ProfileBorrowItem from './ProfileItems/ProfileBorrowItem.vue';
 defineProps({
     BorrowList: Object
 })
@@ -14,52 +15,18 @@ defineProps({
                 <div class="col col-2">Fra</div>
                 <div class="col col-2">Til</div>
             </li>
-            <li v-for="(Item, index) in BorrowList" :key="item">
-                <div class="col col-2 item">{{Item.item.name}}</div>
-                <div class="col col-2 item">{{Item.description}}</div>
-                <div class="col col-2 item">{{Item.amount}}</div>
-                <div class="col col-2 item">{{Item.dateFrom.toLocaleString('en-GB', { timeZone: 'CET' })}}</div>
-                <div class="col col-2 item" v-text="Item.dateTo.toLocaleString('en-GB', { timeZone: 'CET' }) || 'N/A'"></div>
-            </li>
+            <ProfileBorrowItem v-for="(Item, index) in BorrowList" :key="item" :Item="Item"/>
         </ul>
     </div>
 </template>
 
 <script lang="jsx">
 export default {
-    data(){
-        return{
-        }
-    },
-    computed: {
-        BorrowedList(){
-            let BorrowedList = this.BorrowList
-            return BorrowedList
-        }
-    },
+
 }
 </script>
 
 <style scoped lang="scss">
-    .BorrowLoading-div{
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-    }
-    .loader {
-        border: 8px solid var(--light-loading);
-        border-top: 8px solid var(--dark-loading);
-        border-radius: 50%;
-        width: 5rem;
-        height: 5rem;
-        animation: spin 2s linear infinite;
-    }
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
     li {
         border-radius: 3px;
         padding: 0.5em;

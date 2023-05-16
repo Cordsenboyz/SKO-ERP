@@ -4,6 +4,7 @@ import Login from './components/LoginComponents/Login.vue';
 import NavbarView from './views/NavbarView.vue'
 import { store, role, user } from './store.js'
 import axios from "axios";
+import Loading from './components/UtilsComponents/Loading.vue';
 </script>
 
 <template>
@@ -18,9 +19,7 @@ import axios from "axios";
   <section v-else-if="!IsLoggingIn" class="Login-section">
     <Login />
   </section>
-  <div v-else class="LoginLoading-div">
-      <div class="loader"></div>
-  </div>
+  <Loading v-else />
 </template>
 
 <script lang="jsx">
@@ -31,18 +30,18 @@ import axios from "axios";
         IsLoggingIn: false
       }
     },
-    methods: {
-    },
     created: async function(){
       if(localStorage.getItem("token")){
         this.IsLoggingIn = true;
         let token = localStorage.getItem("token")
         let expires = localStorage.getItem("expires")
+
         if(new Date(expires).getTime() > Date.now()){
           await axios.get(`https://localhost:7203/api/User/getUser`, 
           {
               headers: { Authorization: `Bearer ${token}` }
-          }).then(response => {
+          })
+          .then(response => {
             store.IsAuthenticated = true
             role.value = response.data.role;
             user.data.fullName = response.data.fullName
@@ -57,7 +56,8 @@ import axios from "axios";
             await axios.post(`https://localhost:7203/api/User/refreshToken`, {
               token: token,
               refreshToken: refreshToken
-            }).then(async response => {
+            })
+            .then(async response => {
               localStorage.setItem("token", response.data.token.token)
               localStorage.setItem("refreshToken", response.data.token.refreshToken)
               localStorage.setItem("expires", response.data.token.expiration)
@@ -65,16 +65,17 @@ import axios from "axios";
               await axios.get(`https://localhost:7203/api/User/getUser`, 
                 {
                     headers: { Authorization: `Bearer ${response.data.token.token}` }
-                }).then(userResponse => {
+                })
+                .then(userResponse => {
                   store.IsAuthenticated = true
                   role.value = userResponse.data.role;
                   user.data.fullName = userResponse.data.fullName
                   this.IsLoggingIn = false;
-                })
-              }).catch(error => {
-                  this.IsLoggingIn = false;
-                  console.log(error)
-                })
+              })
+            })
+            .catch(error => {
+              this.IsLoggingIn = false;
+            })
           } else{
             this.IsLoggingIn = false;
             localStorage.clear()
@@ -89,23 +90,4 @@ import axios from "axios";
   .Login-section{
     color: var(--light-textcolor);
   }
-  .LoginLoading-div{
-    display: flex;
-    width: 100%;
-    height: 100vh;
-    align-items: center;
-    justify-content: center;
-  }
-  .loader {
-        border: 16px solid var(--dark-loading);
-        border-top: 16px solid var(--primary-element);
-        border-radius: 50%;
-        width: 10rem;
-        height: 10rem;
-        animation: spin 2s linear infinite;
-    }
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
 </style>

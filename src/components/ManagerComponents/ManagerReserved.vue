@@ -1,6 +1,7 @@
 <script setup lang="jsx">
 import axios from 'axios';
-import ManagerReservedItem from './ManagerReservedItem.vue';
+import ManagerReservedItem from './ManagerItems/ManagerReservedItem.vue';
+import Loading from '../UtilsComponents/Loading.vue';
 </script>
 
 <template lang="">
@@ -10,11 +11,9 @@ import ManagerReservedItem from './ManagerReservedItem.vue';
         </div>
         <div class="ReservedBody-div">
             <ul v-if="!isLoading">
-                <ManagerReservedItem v-for="Item in ReservedItemList" :key="Item" :Item="Item"/>
+                <ManagerReservedItem v-for="Item in ReservedBorrowItemsApiData" :key="Item" :Item="Item"/>
             </ul>
-            <div v-else class="ManagerBorrowingLoading-div">
-                <div class="loader"></div>
-            </div>
+            <Loading v-else />
         </div>
     </div>
 </template>
@@ -23,22 +22,19 @@ import ManagerReservedItem from './ManagerReservedItem.vue';
 export default {
     data(){
         return{
-            APIReservedBorrowItems: [],
-            isLoading: true
-        }
-    },
-    computed: {
-        ReservedItemList(){
-            const ReservedItemList = this.APIReservedBorrowItems
-            return ReservedItemList
+            isLoading: true,
+            ReservedBorrowItemsApiData: [],
         }
     },
     mounted: async function(){
         let token = localStorage.getItem("token")
-        await axios.get("https://localhost:7203/Borrow/GetAllReservedBorrowItems", {
-            headers: { Authorization: `Bearer ${token}` }}).then(response => {
-                this.APIReservedBorrowItems = response.data
-                this.isLoading = false;
+
+        await axios.get("https://localhost:7203/api/Borrow/GetAllReservedBorrowItems", {
+            headers: { Authorization: `Bearer ${token}` }
+        })
+        .then(response => {
+            this.ReservedBorrowItemsApiData = response.data
+            this.isLoading = false;
         })
     }
 }

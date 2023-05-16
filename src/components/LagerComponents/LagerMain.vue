@@ -9,61 +9,70 @@ import axios from 'axios'
 <template lang="">
     <div class="LagerMain-div">
         <LagerItemPreview :SelectedItem="SelectedItem" />
-        <LagerItemList :LagerItems="LagerItems"/>
+        <LagerItemList :LagerItems="LagerItemsApiData"/>
     </div>
 </template>
 
 <script lang="jsx">
-
-
-
 export default {
     data(){
         return{
             SelectedItem: {},
+            LagerItemsApiData: [],
             connection: null,
-            LagerItems: [],
         }
     },
     mounted: function(){
         this.emitter.on("SelectedItem", (userSelectedItem) => {
             this.SelectedItem = toRaw(userSelectedItem)
         })
+
         this.emitter.on("DeleteItem", (id) => {
             let token = localStorage.getItem("token")
-            axios.delete(`https://localhost:7203/Item/DeleteItem?id=${id}`, {
-                headers: { Authorization: `Bearer ${token}` }}).then(this.SelectedItem = this.LagerItems[0])
+            
+            axios.delete(`https://localhost:7203/api/Item/DeleteItem?id=${id}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            .then(this.SelectedItem = this.LagerItemsApiData[0])
         })
+
         this.emitter.on("UpdateLager", () => {
             this.GetUpdatedData()
         })
     },
     created: async function(){
         let token = localStorage.getItem("token")
-        let response = await axios.get("https://localhost:7203/Item/GetAllItems", {
-            headers: { Authorization: `Bearer ${token}` }})
-        this.LagerItems = response.data
+
+        await axios.get("https://localhost:7203/api/Item/GetAllItems", {
+            headers: { Authorization: `Bearer ${token}` }
+        }).then(response => {
+            this.LagerItemsApiData = response.data
+        })
+        
     },
     methods: {
         GetUpdatedData: async function(){
             let token = localStorage.getItem("token")
-            await axios.get("https://localhost:7203/Item/GetAllItems", {
+
+            await axios.get("https://localhost:7203/api/Item/GetAllItems", {
                 headers: { Authorization: `Bearer ${token}` }
-            }).then(response => {
-                    this.LagerItems = response.data
-                    if(Object.keys(toRaw(this.SelectedItem)).length){
-                        let Item = this.LagerItems.find((a) => a.id === this.SelectedItem.id)
-                        let SelectedItemIndex = this.LagerItems.indexOf(Item)
-                        this.SelectedItem = this.LagerItems[SelectedItemIndex];
-                    }
-                })
+            })
+            .then(response => {
+                this.LagerItemsApiData = response.data
+
+                if(Object.keys(toRaw(this.SelectedItem)).length){
+                    let Item = this.LagerItemsApiData.find((a) => a.id === this.SelectedItem.id)
+                    let SelectedItemIndex = this.LagerItemsApiData.indexOf(Item)
+                    this.SelectedItem = this.LagerItemsApiData[SelectedItemIndex];
+                }
+            })
         }
     }
 }
 </script>
 
 <style scoped lang="scss">
-    .LagerMain-div{
+    .LagerMain-div {
         width: calc(80% - 2rem);
         margin: 0 auto;
         display: flex;

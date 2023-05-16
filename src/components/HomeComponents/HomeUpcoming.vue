@@ -1,5 +1,7 @@
 <script setup lang="jsx">
 import axios from 'axios';
+import Loading from '../UtilsComponents/Loading.vue';
+import HomeUpcomingItem from './HomeItems/HomeUpcomingItem.vue';
 </script>
 
 <template lang="">
@@ -10,19 +12,11 @@ import axios from 'axios';
             </div>
             <div class="HomeUpcomingBody-div">
                 <ul class="responsive-table">
-                    <li v-for="(Item, index) in RequestData" :key="Item">
-                        <div class="col col-3">{{Item.item.name}}</div>
-                        <div class="col col-1">{{Item.description}}</div>
-                        <div class="col col-1">{{Item.amount}}</div>
-                        <div class="col col-3">{{Item.dateFrom.toLocaleString('en-GB', { timeZone: 'CET' })}}</div>
-                        <div class="col col-3">{{Item.dateTo.toLocaleString('en-GB', { timeZone: 'CET' })}}</div>
-                    </li>
+                    <HomeUpcomingItem v-for="(Item, index) in RequestApiData" :key="Item" :Item="Item" />
                 </ul>
             </div>
         </div>
-        <div v-else class="HomeUpcomingLoading-div">
-            <div class="loader"></div>
-        </div>
+        <Loading v-else />
     </div>
 </template>
 <script lang="jsx">
@@ -30,17 +24,19 @@ export default {
     data(){
         return{
             isLoading: true,
-            RequestData: []
+            RequestApiData: []
         }
     },
     mounted: async function(){
         let token = localStorage.getItem("token")
-        await axios.get("https://localhost:7203/Borrow/GetReservedBorrowItems", {
-                headers: { Authorization: `Bearer ${token}` }
-            }).then(response => {
-                this.isLoading = false
-                this.RequestData = response.data
-            })
+
+        await axios.get("https://localhost:7203/api/Borrow/GetReservedBorrowItems", {
+            headers: { Authorization: `Bearer ${token}` }
+        })
+        .then(response => {
+            this.isLoading = false
+            this.RequestData = response.data
+        })
     }
 }
 </script>
@@ -74,12 +70,6 @@ export default {
         height: calc(100% - 3.5rem);
         overflow-y: overlay;
     }
-    .HomeUpcomingLoading-div{
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
     .responsive-table {
         padding: 0;
         color: var(--light-textcolor);
@@ -97,28 +87,5 @@ export default {
             
         }
     }
-    .col-1 {
-        flex-basis: 40%;
-    }
-    .col-2 {
-        flex-basis: 10%;
-    }
-    .col-3 {
-        flex-basis: 25%;
-    }
-    .col-4 {
-        flex-basis: 25%;
-    }
-    .loader {
-        border: 8px solid var(--light-loading);
-        border-top: 8px solid var(--dark-loading);
-        border-radius: 50%;
-        width: 5rem;
-        height: 5rem;
-        animation: spin 2s linear infinite;
-    }
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
+
 </style>

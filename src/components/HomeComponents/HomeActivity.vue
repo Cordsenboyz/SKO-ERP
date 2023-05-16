@@ -1,3 +1,8 @@
+<script setup lang="jsx">
+import Loading from "../UtilsComponents/Loading.vue"
+import HomeActivityItem from "./HomeItems/HomeActivityItem.vue";
+</script>
+
 <template lang="">
     <div class="HomeActivity-div">
         <div class="HomeActivityLoaded-div" v-if="!isLoading">
@@ -6,26 +11,21 @@
             </div>
             <div class="HomeActivityBody-div">
                 <ul class="responsive-table">
-                    <li v-for="(Item, index) in TempData" :key="Item">
-                        <div class="col col-2">{{Item.person}}</div>
-                        <div class="col col-1">{{Item.name}}</div>
-                        <div class="col col-2">{{Item.desc}}</div>
-                        <div class="col col-3">{{Item.date}}</div>
-                    </li>
+                    <HomeActivityItem v-for="(Item, index) in ActivityApiData" :key="Item" :Item="Item" />
                 </ul>
             </div>
         </div>
-        <div v-else class="HomeActivityLoading-div">
-            <div class="loader"></div>
-        </div>
+        <Loading v-else/>
     </div>
 </template>
-<script>
+
+<script lang="jsx">
 export default {
     data(){
         return{
             isLoading: false,
-            TempData: [{
+
+            ActivityApiData: [{
                 id: 1,
                 name: 'Samsung 27"',
                 desc: "Mangler en skærm",
@@ -111,24 +111,6 @@ export default {
         flex-direction: column;
         overflow-y: overlay;
     }
-    .HomeActivityLoading-div{
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    .loader {
-        border: 8px solid var(--light-loading);
-        border-top: 8px solid var(--dark-loading);
-        border-radius: 50%;
-        width: 5rem;
-        height: 5rem;
-        animation: spin 2s linear infinite;
-    }
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
     .responsive-table {
         padding: 0;
         color: var(--light-textcolor);
@@ -143,20 +125,6 @@ export default {
             list-style: none;
             background-color: var(--secondary-element);
             box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.1);
-            
         }
     }
-    .col-1 {
-        flex-basis: 40%;
-    }
-    .col-2 {
-        flex-basis: 10%;
-    }
-    .col-3 {
-        flex-basis: 25%;
-    }
-    .col-4 {
-        flex-basis: 25%;
-    }
-
 </style>

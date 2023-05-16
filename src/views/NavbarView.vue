@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="jsx">
 import NavbarItemsList from '../components/NavbarComponents/NavbarItemList.vue';
 import { store } from '../store';
 </script>
@@ -14,16 +14,14 @@ import { store } from '../store';
         <p class="NavbarLogin-p"><button class="Logout-btn" @click="Logout()">Logout</button></p>
     </div>
 </template>
-<script>
+
+<script lang="jsx">
 export default {
     methods: {
         Logout: function(){
             localStorage.removeItem("token")
             store.IsAuthenticated = false
         }
-    },
-    mounted: function(){
-
     }
 }
 </script>

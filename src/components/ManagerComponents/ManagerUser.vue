@@ -1,9 +1,10 @@
 <script setup lang="jsx">
 import { toRaw } from 'vue';
 import { role } from '../../store.js'
-import ManagerUserItem from './ManagerUserItem.vue';
+import ManagerUserItem from './ManagerItems/ManagerUserItem.vue';
 import ModalProfile from '../UtilsComponents/ModalProfile.vue';
 import axios from 'axios';
+import Loading from '../UtilsComponents/Loading.vue';
 </script>
 
 <template lang="">
@@ -12,9 +13,10 @@ import axios from 'axios';
         <button class="btn btn-confirm">Opret</button>
     </div>
     <div class="UserBody-div">
-        <ul>
+        <ul v-if="!isLoading">
             <ManagerUserItem v-for="Item in SearchUser" :key="Item" :Item="Item"/>
         </ul>
+        <Loading v-else />
     </div>
     <ModalProfile v-if="role.value === 'Admin' && showProfileModal == true" :cancel="cancel" :confirm="confirm" :Item="modalItem"/>
 </template>
@@ -23,15 +25,16 @@ import axios from 'axios';
 export default {
     data(){
         return{
+            isLoading: true,
             search: "",
-            Users: [],
+            UserApiData: [],
             showProfileModal: false,
             modalItem: {},
         }
     },
     computed: {
         SearchUser(){
-            const SearchUser = toRaw(this.Users).filter(item => {
+            const SearchUser = toRaw(this.UserApiData).filter(item => {
                 return (
                     item.fullName.toLowerCase().includes(this.search.toLowerCase())
                 );
@@ -41,17 +44,22 @@ export default {
     },
     mounted: async function(){
         this.emitter.on("DeleteUser", (user) => {
-            this.Users.splice(this.Users.indexOf(user), 1)
         })
+
         this.emitter.on("ShowProfileModal", (Item) => {
             this.modalItem = Item
             this.showProfileModal = true
         })
+
         let token = localStorage.getItem("token")
+
         await axios.get("https://localhost:7203/api/User/getAllUsers", {
-            headers: { Authorization: `Bearer ${token}` }}).then(response => {
-                this.Users = response.data
-            })
+            headers: { Authorization: `Bearer ${token}` }
+        })
+        .then(response => {
+            this.UserApiData = response.data
+            this.isLoading = false
+        })
     },
     methods: {
         cancel: function(){

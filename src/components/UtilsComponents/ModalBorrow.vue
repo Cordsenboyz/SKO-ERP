@@ -81,10 +81,6 @@ export default {
         flex-direction: column;
         gap: 0.5em;
     }
-    .uploading-image{
-        width: 50%;
-        margin: 0 auto;
-    }
     .form-input-label{
         font-weight: bold;
     }

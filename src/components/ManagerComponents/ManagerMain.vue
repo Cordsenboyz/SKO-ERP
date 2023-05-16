@@ -14,7 +14,6 @@ import ManagerConfirmation from './ManagerConfirmation.vue'
 
 <script lang="jsx">
 export default {
-
 }
 </script>
 

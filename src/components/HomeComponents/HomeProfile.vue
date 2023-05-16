@@ -1,5 +1,6 @@
 <script setup lang="jsx">
 import {user} from '../../store.js'
+import Modal from '../UtilsComponents/Modal.vue'
 </script>
 
 <template lang="">
@@ -7,18 +8,22 @@ import {user} from '../../store.js'
         <label>Hej, {{user.data.fullName}}</label>
         <div class="HomeProfileBtn-container">
             <button class="btn btn-update">Redigér</button>
-            <button class="btn btn-confirm">Profil</button>
+            <button class="btn btn-confirm" @click="showProfileModal = true">Profil</button>
         </div>
+        <Modal v-if="showProfileModal">
+            <button class="btn btn-cancel" @click="showProfileModal = false">Luk</button>
+        </Modal>
     </div>
+
 </template>
 
 <script lang="jsx">
 export default {
     data(){
         return{
-
+            showProfileModal: false,
         }
-    }
+    },
 }
 </script>
 

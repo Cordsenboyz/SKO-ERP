@@ -1,4 +1,4 @@
-<script setup lang="">
+<script setup lang="jsx">
 import { Line } from 'vue-chartjs'
 import {
   Chart as ChartJS,
@@ -23,7 +23,7 @@ import {
     </div>
 </template>
 
-<script lang="">
+<script lang="jsx">
 
 ChartJS.register(
   CategoryScale,

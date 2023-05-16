@@ -35,15 +35,7 @@
   
 <script lang="jsx">
 export default {
-    data(){
-        return{
-
-        }
-    },
     props: ['cancel', 'SubmitUpdate', 'LagerItem'],
-    methods: {
-
-    }
 }
 </script>
 
@@ -92,10 +84,6 @@ export default {
         display: flex;
         flex-direction: column;
         gap: 0.5em;
-    }
-    .uploading-image{
-        width: 50%;
-        margin: 0 auto;
     }
     .form-input-label{
         font-weight: bold;

@@ -4,6 +4,8 @@ import ModalCreate from '../UtilsComponents/ModalCreate.vue';
 import {role} from '../../store.js'
 import { HubConnectionBuilder, LogLevel } from '@aspnet/signalr'
 import axios from 'axios'
+import LagerItemsListItem from './LagerItemListItems/LagerItemsListItem.vue';
+import Loading from '../UtilsComponents/Loading.vue';
 defineProps({
     LagerItems: Object,
 })
@@ -46,17 +48,9 @@ defineProps({
                         <div class="col col-3 sortable" @click="setProperty('category')">Kategori</div>
                         <div class="col col-4 sortable" @click="setProperty('sub-category')">Under Kategori</div>
                     </li>
-                    <li class="table-row" v-for="(Item, index, key) in PaginationList" :key="Item" @click="SelectItem(index)">
-                        <div class="col col-2">{{Item.id}}</div>
-                        <div class="col col-1">{{Item.name}}</div>
-                        <div class="col col-2">{{Item.amount}}</div>
-                        <div class="col col-3">{{Item.category.name}}</div>
-                        <div class="col col-4">{{Item.subCategory.name}}</div>
-                    </li>
+                    <LagerItemsListItem v-for="(Item, index, key) in PaginationList" :key="Item" @click="SelectItem(index)" :Item="Item" />
                 </ul>
-                <div v-else class="LagerItemListLoading-div">
-                    <div class="loader"></div>
-                </div>
+                <Loading v-else />
             </div>
         </div>               
         <div class="LagerFooterPagination-div">
@@ -172,9 +166,11 @@ export default {
     methods:{
         GetCategories: async function(){
             let token = localStorage.getItem("token")
-            await axios.get('https://localhost:7203/Category/GetCategory', {
+
+            await axios.get('https://localhost:7203/api/Category/GetCategory', {
                 headers: { Authorization: `Bearer ${token}` }
-            }).then(response => {
+            })
+            .then(response => {
                 this.categories = response.data
             })
         },
@@ -192,7 +188,8 @@ export default {
             let dbData = {...this.Item}
             dbData.amount += 1
             let token = localStorage.getItem("token")
-            await axios.post('https://localhost:7203/Item/PostItem', dbData, {
+
+            await axios.post('https://localhost:7203/api/Item/PostItem', dbData, {
                 headers: { Authorization: `Bearer ${token}` }
             })
         },
@@ -251,24 +248,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-    .loader {
-        border: 8px solid var(--light-loading);
-        border-top: 8px solid var(--dark-loading);
-        border-radius: 50%;
-        width: 5rem;
-        height: 5rem;
-        animation: spin 2s linear infinite;
-    }
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-    .LagerItemListLoading-div{
-        height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
     .LagerListItemTable-div{
         height: 100%;
     }
@@ -317,10 +296,6 @@ export default {
 
         &:focus{
             outline-color: var(--primary-element);
-        }
-
-        option{
-
         }
     }
     .filter-container{
@@ -439,9 +414,6 @@ export default {
     @media all and (max-width: 767px) {
         .table-header {
         display: none;
-        }
-        .table-row{
-        
         }
         li {
         display: block;

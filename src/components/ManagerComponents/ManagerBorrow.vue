@@ -1,6 +1,7 @@
 <script setup lang="jsx">
-import ManagerBorrowItem from './ManagerBorrowItem.vue';
+import ManagerBorrowItem from './ManagerItems/ManagerBorrowItem.vue';
 import axios from 'axios';
+import Loading from '../UtilsComponents/Loading.vue';
 </script>
 
 <template lang="">
@@ -10,11 +11,9 @@ import axios from 'axios';
         </div>
         <div class="BorrowBody-div">
             <ul v-if="!isLoading">
-                <ManagerBorrowItem v-for="Item in BorrowItems" :key="Item" :Item="Item"/>
+                <ManagerBorrowItem v-for="Item in BorrowItemsApiData" :key="Item" :Item="Item"/>
             </ul>
-            <div v-else class="ManagerBorrowingLoading-div">
-                <div class="loader"></div>
-            </div>
+            <Loading v-else />
         </div>
     </div>
 </template>
@@ -23,23 +22,19 @@ import axios from 'axios';
 export default {
     data(){
         return{
-            APIBorrowItems: [],
             isLoading: true,
-        }
-    },
-    computed: {
-        BorrowItems(){
-            const BorrowItems = this.APIBorrowItems 
-            return BorrowItems
+            BorrowItemsApiData: [],
         }
     },
     mounted: async function(){
         let token = localStorage.getItem("token")
-        await axios.get("https://localhost:7203/Borrow/GetAllBorrowItems", {
-            headers: { Authorization: `Bearer ${token}` }}).then(response => {
-                this.APIBorrowItems = response.data
-                console.log(response.data)
-                this.isLoading = false;
+
+        await axios.get("https://localhost:7203/api/Borrow/GetAllBorrowItems", {
+            headers: { Authorization: `Bearer ${token}` }
+        })
+        .then(response => {
+            this.BorrowItemsApiData = response.data
+            this.isLoading = false;
         })
     }
 }
@@ -72,24 +67,5 @@ export default {
         padding: 1em;
         height: calc(100% - 3.5rem);
         overflow-y: overlay;
-    }
-    .ManagerBorrowingLoading-div{
-        height: 100%;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-    .loader {
-    border: 8px solid var(--light-loading);
-    border-top: 8px solid var(--dark-loading);
-    border-radius: 50%;
-    width: 5rem;
-    height: 5rem;
-    animation: spin 2s linear infinite;
-    }
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
     }
 </style>

@@ -1,4 +1,5 @@
 <script setup lang="jsx">
+import Loading from '../UtilsComponents/Loading.vue';
 defineProps({
     Item: Object
 })
@@ -34,9 +35,7 @@ defineProps({
             </div>
         </form>
     </div>
-    <div v-else class="ProfileLoading-div">
-        <div class="loader"></div>
-    </div>
+    <Loading v-else />
 </template>
 
 <script lang="jsx">
@@ -50,7 +49,6 @@ export default {
     },
     mounted: function(){
         if(this.Item){
-            
             this.isLoading = false
         }
     },
@@ -105,23 +103,5 @@ export default {
         display: flex;
         flex-direction: row;
         gap: 0.5em;
-    }
-    .ProfileLoading-div{
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    .loader {
-        border: 8px solid var(--light-loading);
-        border-top: 8px solid var(--dark-loading);
-        border-radius: 50%;
-        width: 5rem;
-        height: 5rem;
-        animation: spin 2s linear infinite;
-    }
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
     }
 </style>

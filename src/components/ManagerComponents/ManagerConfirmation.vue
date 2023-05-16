@@ -23,7 +23,6 @@ import { role } from '../../store.js'
 
 <script lang="jsx">
 export default {
-
 }
 </script>
 

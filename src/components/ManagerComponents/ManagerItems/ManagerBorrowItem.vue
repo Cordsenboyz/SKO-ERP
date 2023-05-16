@@ -17,16 +17,6 @@ defineProps({
 
 <script lang="jsx">
 export default {
-    data(){
-        return{
-
-        }
-    },
-    computed:{
-/*         isDueSoon(){
-            return Date.now() > this.Item.dateTo.getTime() 
-        } */
-    }
 }
 </script>
 
